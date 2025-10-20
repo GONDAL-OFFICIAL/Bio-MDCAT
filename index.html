@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ali Gondal MDCAT</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="index.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -13,15 +13,29 @@
     />
   </head>
   <body>
-    <main class="main-container">
-      <h1>Ali Gondal - MDCAT - 2k25</h1>
+    <div id="login-container" class="login-container">
+      <form id="login-form">
+        <h2>Enter Password</h2>
+        <div class="input-group">
+          <input type="password" id="password" placeholder="Password" required />
+        </div>
+        <button type="submit" class="btn">Login</button>
+        <p id="error-message"></p>
+      </form>
+    </div>
 
+    <main id="main-container" class="main-container hidden">
+      <h1>Ali Gondal - MDCAT - 2k25</h1>
       <nav class="subject-buttons">
         <a href="#" id="biology-btn" class="btn">Biology</a>
-        <a href="#" class="btn">Chemistry</a>
-        <a href="#" class="btn">Physics</a>
+        <a href="#" id="chemistry-btn" class="btn">Chemistry</a>
+        <a href="#" id="physics-btn" class="btn">Physics</a>
       </nav>
+    </main>
 
+    <section id="biology-page" class="page-container hidden">
+      <a href="#" id="back-to-main-btn" class="btn back-btn">← Back</a>
+      <h2>Biology Chapters</h2>
       <div id="biology-sub-buttons" class="sub-buttons-container">
         <a
           href="https://kaleidoscopic-biscochitos-bfa389.netlify.app/"
@@ -47,8 +61,41 @@
         <a href="#" class="btn">Circulation – Immunity</a>
         <a href="#" class="btn">Respiration – Digestion</a>
       </div>
-    </main>
+    </section>
 
-    <script src="script.js"></script>
+    <section id="chemistry-page" class="page-container hidden">
+      <a href="#" id="back-to-main-from-chem-btn" class="btn back-btn">← Back</a>
+      <h2>Chemistry Chapters</h2>
+      <div class="sub-buttons-container">
+        <a href="#" class="btn">Fundamental concepts & Atomic structure</a>
+        <a href="#" class="btn">GAs & Solid & Liquid</a>
+        <a href="#" class="btn">Equilibrium and reaction kinetics</a>
+        <a href="#" class="btn">Thermochemistry & Electrochemistry</a>
+        <a href="#" class="btn">Chemical bonding & Macromolecules</a>
+        <a href="#" class="btn">S&P block elements & Transition elements</a>
+        <a href="#" class="btn">Fundamental of organic chemistry</a>
+        <a href="#" class="btn">Hydrocarbons & Alkyl Halides & Alchohols/Phenols</a>
+        <a href="#" class="btn">Aldehyde/Ketones & Carboxylic Acids</a>
+        <a href="#" class="btn">Indusrial chemistry</a>
+      </div>
+    </section>
+
+    <section id="physics-page" class="page-container hidden">
+      <a href="#" id="back-to-main-from-physics-btn" class="btn back-btn">← Back</a>
+      <h2>Physics Chapters</h2>
+      <div class="sub-buttons-container">
+        <a href="#" class="btn">Force and motion & Work and Energy</a>
+        <a href="#" class="btn">Circular motion & Waves</a>
+        <a href="#" class="btn">Thermodynamics & Electrostatics & Current electricity</a>
+        <a href="#" class="btn">Vectors & A.C. & Fluid dynamics</a>
+        <a href="#" class="btn">Electromagnetism & Electromagnetic induction</a>
+        <a href="#" class="btn">Electronic & Dawn of modern physics</a>
+        <a href="#" class="btn">Atomic spectra & Nuclear Physics</a>
+      </div>
+    </section>
+    
+    <footer class="floating-footer">MDCAT BY ALI GONDAL</footer>
+
+    <script type="module" src="index.js"></script>
   </body>
 </html>
