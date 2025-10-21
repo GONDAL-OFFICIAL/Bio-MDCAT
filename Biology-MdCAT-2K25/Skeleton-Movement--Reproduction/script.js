@@ -1151,3 +1151,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   init();
 });
+
+// Disable right-click menu
+document.addEventListener("contextmenu", (event) => event.preventDefault());
+
+// Disable common copy shortcuts (Ctrl+C, Ctrl+U, Ctrl+S, etc.)
+document.addEventListener("keydown", (event) => {
+  if (
+    event.ctrlKey &&
+    ["c", "u", "s", "x", "a"].includes(event.key.toLowerCase())
+  ) {
+    event.preventDefault();
+  }
+});
+
+// Optional: prevent drag selection
+document.addEventListener("dragstart", (event) => event.preventDefault());
