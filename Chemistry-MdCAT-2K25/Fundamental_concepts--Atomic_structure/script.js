@@ -532,22 +532,24 @@ function addEventListeners() {
  */
 function handleStartTest() {
     errorMessage.textContent = '';
-    
-    // Validate number of questions to attempt
-    let numToAttempt = parseInt(numQuestionsInput.value, 10);
-    if (isNaN(numToAttempt) || numToAttempt <= 0) {
-        numToAttempt = 1;
-        numQuestionsInput.value = '1';
+    const numToAttempt = parseInt(numQuestionsInput.value, 10);
+
+    if (isNaN(numToAttempt)) {
+        errorMessage.textContent = 'Please enter a valid number.';
+        return;
     }
-    // FIX: Use `allQuestions` for validation and messaging.
+
+    if (numToAttempt < 1) {
+        errorMessage.textContent = 'You must attempt at least 1 question.';
+        return;
+    }
+
     if (numToAttempt > allQuestions.length) {
-        numToAttempt = allQuestions.length;
-        numQuestionsInput.value = String(allQuestions.length);
-        errorMessage.textContent = `Max questions available is ${allQuestions.length}. Capped automatically.`;
+        errorMessage.textContent = `You can attempt a maximum of ${allQuestions.length} questions.`;
+        return;
     }
 
     // Setup and start the quiz
-    // FIX: Use `allQuestions` to source the quiz questions.
     originalTestQuestions = shuffleArray([...allQuestions]).slice(0, numToAttempt);
     startQuiz(originalTestQuestions);
 }

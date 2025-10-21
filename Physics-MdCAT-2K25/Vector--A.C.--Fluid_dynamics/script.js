@@ -410,14 +410,18 @@
         numError.textContent = "Please enter a valid number of questions.";
         return;
       }
-      const cappedNum = Math.min(numToAttempt, allQuestions.length);
+
+      // NEW: Prevent start if user asks for more questions than available
       if (numToAttempt > allQuestions.length) {
-        numError.textContent = `Input exceeds available questions. Starting with ${cappedNum}.`;
+        numError.textContent = `Input exceeds available questions. Please enter a number up to ${allQuestions.length}.`;
+        return;
       }
-      numQuestionsInput.value = cappedNum;
+
+      // Input is valid and within available range
+      numQuestionsInput.value = numToAttempt;
 
       const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
-      questionsForTest = shuffled.slice(0, cappedNum);
+      questionsForTest = shuffled.slice(0, numToAttempt);
     }
 
     if (questionsForTest.length === 0) {

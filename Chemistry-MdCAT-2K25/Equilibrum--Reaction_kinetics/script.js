@@ -213,11 +213,6 @@ const PRESET_QUESTIONS = [
         answer: "The reaction occurs through a multi-step mechanism."
     },
     {
-        question: "If a reaction has a half-life of 20 minutes, how much reactant will be left after one hour (60 minutes)?",
-        options: ["50%", "25%", "12.5%", "0%"],
-        answer: "12.5%"
-    },
-    {
         question: "The overall order of the reaction with the rate law: Rate = k[X][Y]² is:",
         options: ["1", "2", "3", "4"],
         answer: "3"
@@ -421,6 +416,47 @@ const PRESET_QUESTIONS = [
         question: "Adding a soluble salt containing a common ion to a solution of a slightly soluble salt will:",
         options: ["Increase its solubility", "Decrease its solubility", "Have no effect on its solubility", "Change its color"],
         answer: "Decrease its solubility"
+    },
+    // --- NEW NUMERICAL PROBLEMS ---
+    {
+        question: "For N₂(g) + 3H₂(g) ⇌ 2NH₃(g), at equilibrium in a 2.0 L container, you have 0.50 mol of N₂, 1.50 mol of H₂, and 0.20 mol of NH₃. What is K_c?",
+        options: ["0.095", "10.5", "0.237", "1.50"],
+        answer: "0.095"
+    },
+    {
+        question: "A first-order reaction has a half-life of 30 minutes. What percentage of the reactant will remain after 90 minutes?",
+        options: ["50%", "25%", "12.5%", "6.25%"],
+        answer: "12.5%"
+    },
+    {
+        question: "The half-life of a first-order reaction is 69.3 s. What is the value of the rate constant (k)? (k = 0.693 / t₁/₂)",
+        options: ["1.0 s⁻¹", "0.1 s⁻¹", "0.01 s⁻¹", "10.0 s⁻¹"],
+        answer: "0.01 s⁻¹"
+    },
+    {
+        question: "A reaction starts with 0.50 M of A. For the reaction A ⇌ 2B, the equilibrium concentration of B is 0.40 M. What is the equilibrium concentration of A?",
+        options: ["0.10 M", "0.20 M", "0.30 M", "0.50 M"],
+        answer: "0.30 M"
+    },
+    {
+        question: "For the reaction 2SO₂(g) + O₂(g) ⇌ 2SO₃(g) at 500 K, what is the relationship between Kp and Kc?",
+        options: ["Kp = Kc", "Kp = Kc(RT)", "Kp = Kc(RT)⁻¹", "Kp = Kc(RT)²"],
+        answer: "Kp = Kc(RT)⁻¹"
+    },
+    {
+        question: "Reaction X doubles its rate from 298K to 308K. Reaction Y triples its rate over the same temperature range. Which statement is correct?",
+        options: ["Reaction X has a higher Ea than Y", "Reaction Y has a higher Ea than X", "Both have the same Ea", "Ea cannot be determined"],
+        answer: "Reaction Y has a higher Ea than X"
+    },
+    {
+        question: "A first-order reaction has a rate constant of 0.02 min⁻¹. How long will it take for the concentration to drop from 0.8 M to 0.1 M?",
+        options: ["50 min", "75 min", "104 min", "208 min"],
+        answer: "104 min"
+    },
+    {
+        question: "What are the units for the rate constant of a third-order reaction?",
+        options: ["s⁻¹", "dm³⋅mol⁻¹⋅s⁻¹", "dm⁶⋅mol⁻²⋅s⁻¹", "mol⋅dm⁻³⋅s⁻¹"],
+        answer: "dm⁶⋅mol⁻²⋅s⁻¹"
     }
 ];
 
@@ -462,22 +498,24 @@ function addEventListeners() {
  */
 function handleStartTest() {
     errorMessage.textContent = '';
-    
-    // Validate number of questions to attempt
-    let numToAttempt = parseInt(numQuestionsInput.value, 10);
-    if (isNaN(numToAttempt) || numToAttempt <= 0) {
-        numToAttempt = 1;
-        numQuestionsInput.value = '1';
+    const numToAttempt = parseInt(numQuestionsInput.value, 10);
+
+    if (isNaN(numToAttempt)) {
+        errorMessage.textContent = 'Please enter a valid number.';
+        return;
     }
-    // FIX: Use `allQuestions` for validation and messaging.
+
+    if (numToAttempt < 1) {
+        errorMessage.textContent = 'You must attempt at least 1 question.';
+        return;
+    }
+
     if (numToAttempt > allQuestions.length) {
-        numToAttempt = allQuestions.length;
-        numQuestionsInput.value = String(allQuestions.length);
-        errorMessage.textContent = `Max questions available is ${allQuestions.length}. Capped automatically.`;
+        errorMessage.textContent = `You can attempt a maximum of ${allQuestions.length} questions.`;
+        return;
     }
 
     // Setup and start the quiz
-    // FIX: Use `allQuestions` to source the quiz questions.
     originalTestQuestions = shuffleArray([...allQuestions]).slice(0, numToAttempt);
     startQuiz(originalTestQuestions);
 }
