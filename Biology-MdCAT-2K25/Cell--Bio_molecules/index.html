@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MCQ Test Platform</title>
+    <link rel="stylesheet" href="style.css" />
+    <script>
+      if (sessionStorage.getItem("unlocked") !== "true") {
+        window.location.href = "../../index.html"; // goes up two folders
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <a
+        href="https://gondal-official.github.io/Bio-MDCAT/"
+        id="home-btn"
+        class="home-btn"
+        >HOME</a
+      >
+
+      <!-- Setup Screen -->
+      <div id="setup-screen" class="screen active">
+        <h1>MCQ Test Platform</h1>
+        <div class="setup-card">
+          <h2>Start Test</h2>
+          <p>
+            Total questions available:
+            <span id="available-questions-count">0</span>
+          </p>
+          <label for="num-questions-input"
+            >Number of questions to attempt:</label
+          >
+          <input type="number" id="num-questions-input" min="1" value="10" />
+          <p id="num-questions-error" class="error-message"></p>
+          <button id="start-btn">Start Test</button>
+        </div>
+      </div>
+
+      <!-- Quiz Screen -->
+      <div id="quiz-screen" class="screen">
+        <header class="quiz-header">
+          <div id="progress-counter">Question 1 of 10</div>
+          <div id="timer">Time: 10:00</div>
+        </header>
+        <div class="progress-bar-container">
+          <div id="progress-bar"></div>
+        </div>
+        <div id="question-container" class="question-card">
+          <p id="question-text"></p>
+          <ul id="options-list">
+            <!-- Options will be dynamically inserted here -->
+          </ul>
+        </div>
+        <button id="next-btn">Next</button>
+      </div>
+
+      <!-- Result Screen -->
+      <div id="result-screen" class="screen">
+        <h1>Test Results</h1>
+        <h2>Refresh To Restart</h2>
+        <div class="result-summary">
+          <div class="summary-item">
+            <p>Correct</p>
+            <span id="correct-count">0</span>
+          </div>
+          <div class="summary-item">
+            <p>Wrong</p>
+            <span id="wrong-count">0</span>
+          </div>
+          <div class="summary-item">
+            <p>Percentage</p>
+            <span id="percentage">0%</span>
+          </div>
+        </div>
+        <div id="wrong-questions-container">
+          <h2>Review Wrong Answers</h2>
+          <div id="wrong-questions-list">
+            <!-- Wrong questions will be dynamically inserted here -->
+          </div>
+        </div>
+        <div class="result-actions">
+          <button id="retake-wrong-btn">Retake Wrong Questions</button>
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
