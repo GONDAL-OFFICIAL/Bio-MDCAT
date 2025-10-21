@@ -1,1145 +1,740 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // --- DOM Elements ---
-  const screens = {
-    setup: document.getElementById('setup-screen'),
-    quiz: document.getElementById('quiz-screen'),
-    result: document.getElementById('result-screen'),
-  };
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-  const homeBtn = document.getElementById('home-btn');
-  const availableQuestionsCountSpan = document.getElementById(
-    'available-questions-count'
-  );
-  const numQuestionsInput = document.getElementById('num-questions-input');
-  const numQuestionsError = document.getElementById('num-questions-error');
-  const startBtn = document.getElementById('start-btn');
+// --- DOM ELEMENT REFERENCES ---
+const setupContainer = document.getElementById('setup-container');
+const quizContainer = document.getElementById('quiz-container');
+const resultContainer = document.getElementById('result-container');
 
-  const progressCounter = document.getElementById('progress-counter');
-  const progressBar = document.getElementById('progress-bar');
-  const timerDisplay = document.getElementById('timer');
-  const questionContainer = document.getElementById('question-container');
-  const questionText = document.getElementById('question-text');
-  const optionsList = document.getElementById('options-list');
-  const nextBtn = document.getElementById('next-btn');
+const numQuestionsInput = document.getElementById('num-questions');
+const startBtn = document.getElementById('start-btn');
+const errorMessage = document.getElementById('error-message');
+const questionCountInfo = document.getElementById('question-count-info');
 
-  const correctCountSpan = document.getElementById('correct-count');
-  const wrongCountSpan = document.getElementById('wrong-count');
-  const percentageSpan = document.getElementById('percentage');
-  const wrongQuestionsList = document.getElementById('wrong-questions-list');
-  const retakeWrongBtn = document.getElementById('retake-wrong-btn');
-  const newTestBtn = document.getElementById('new-test-btn');
+const progressText = document.getElementById('progress-text');
+const progressBarInner = document.getElementById('progress-bar-inner');
+const timerText = document.getElementById('timer-text');
+const questionText = document.getElementById('question-text');
+const optionsList = document.getElementById('options-list');
+const nextBtn = document.getElementById('next-btn');
 
-  // --- State ---
-  let allQuestions = [];
-  let currentQuestions = [];
-  let currentQuestionIndex = 0;
-  let correctAnswers = 0;
-  let wrongAnswers = 0;
-  let timerInterval;
-  let wrongQuestionIndices = [];
+const scoreSummary = document.getElementById('score-summary');
+const wrongQuestionsContainer = document.getElementById('wrong-questions-container');
+const wrongQuestionsList = document.getElementById('wrong-questions-list');
+const retakeFullBtn = document.getElementById('retake-full-btn');
+const retakeWrongBtn = document.getElementById('retake-wrong-btn');
 
-  // --- Pre-defined Questions ---
-  // Paste your JSON questions array here
-  const defaultQuestions = [
-    // Virology Basics
-    {
-      question: 'Where is the matrix protein located in a virus?',
-      options: [
-        'Between the capsid and the envelope',
-        'Inside the capsid',
-        'On the outer surface of the envelope',
-        'Within the nucleic acid',
-      ],
-      correctAnswer: 0,
-    },
-    {
-      question: 'What is the typical size range for viruses?',
-      options: [
-        '25 to 250 micrometers',
-        '25 to 250 millimeters',
-        '25 to 250 nanometers',
-        '0.1 to 1 nanometers',
-      ],
-      correctAnswer: 2,
-    },
-    {
-      question: 'Which viruses are known as the largest viruses?',
-      options: [
-        'Influenza viruses',
-        'Pox viruses',
-        'Bacteriophages',
-        'Retroviruses',
-      ],
-      correctAnswer: 1,
-    },
-    {
-      question: 'How much smaller are viruses compared to bacteria?',
-      options: [
-        '2 to 5 times smaller',
-        'About the same size',
-        '10 to 1000 times smaller',
-        '10,000 times smaller',
-      ],
-      correctAnswer: 2,
-    },
-    {
-      question:
-        'Due to their potential for harm, viruses are sometimes considered to be:',
-      options: [
-        'Biological curiosities',
-        'Biological weapons',
-        'Prokaryotic cells',
-        'Fungal spores',
-      ],
-      correctAnswer: 1,
-    },
-    // History of Virology
-    {
-      question:
-        'Who first mentioned the existence of viruses by describing the filterable nature of rabies?',
-      options: [
-        'Louis Pasteur',
-        'Edward Jenner',
-        'Charles Chamberland',
-        'Wendell Stanley',
-      ],
-      correctAnswer: 2,
-    },
-    {
-      question: 'Who is credited with providing the first vaccine for smallpox?',
-      options: [
-        'Louis Pasteur',
-        'Robert Koch',
-        'Alexander Fleming',
-        'Edward Jenner',
-      ],
-      correctAnswer: 3,
-    },
-    {
-      question:
-        'Which scientist provided vaccines for anthrax, rabies, and cholera?',
-      options: [
-        'Edward Jenner',
-        'Charles Chamberland',
-        'Ivanovsky',
-        'Louis Pasteur',
-      ],
-      correctAnswer: 3,
-    },
-    {
-      question: 'What did Ivanovsky describe viruses as?',
-      options: [
-        'Insoluble toxins',
-        'Dissoluble living germs',
-        'Complex bacteria',
-        'Acellular parasites',
-      ],
-      correctAnswer: 1,
-    },
-    {
-      question:
-        'Which scientist performed the isolation, purification, and crystallization of the Tobacco Mosaic Virus (TMV)?',
-      options: [
-        'Ivanovsky',
-        'F. W. Twort',
-        'Wendell Stanley',
-        'Félix d’Herelle',
-      ],
-      correctAnswer: 2,
-    },
-    {
-      question: 'The discovery of bacteriophages is credited to:',
-      options: [
-        'Wendell Stanley',
-        'Louis Pasteur',
-        'Ivanovsky',
-        'F. W. Twort and Félix d’Herelle',
-      ],
-      correctAnswer: 3,
-    },
-    // Viral Structures and Types
-    {
-      question: 'What is a viroid primarily composed of?',
-      options: [
-        'Double-stranded DNA (dsDNA)',
-        'Single-stranded RNA (ssRNA)',
-        'A protein capsid only',
-        'A lipid envelope',
-      ],
-      correctAnswer: 1,
-    },
-    {
-      question:
-        'Picornavirus is responsible for causing which of the following diseases?',
-      options: [
-        'Influenza and Rabies',
-        'Hepatitis A and Polio',
-        'Smallpox and Measles',
-        'HIV and Herpes',
-      ],
-      correctAnswer: 1,
-    },
-    {
-      question:
-        'What type of genome do most of the 2000 types of plant viruses have?',
-      options: ['dsDNA', 'ssDNA', 'RNA', 'A mix of DNA and RNA'],
-      correctAnswer: 2,
-    },
-    {
-      question:
-        'Which of the following virus shapes is correctly matched with the virus type?',
-      options: [
-        'Helical → Adenovirus',
-        'Complex → Influenza virus',
-        'Polyhedral → Bacteriophage',
-        'Enveloped → Influenza virus',
-      ],
-      correctAnswer: 3,
-    },
-    {
-      question: 'The Tobacco Mosaic Virus (TMV) exhibits which shape?',
-      options: ['Polyhedral', 'Helical', 'Complex', 'Enveloped'],
-      correctAnswer: 1,
-    },
-    {
-      question: 'A bacteriophage is an example of a virus with a ________ shape.',
-      options: ['Helical', 'Circular', 'Polyhedral', 'Complex'],
-      correctAnswer: 3,
-    },
-    {
-      question:
-        'Which of the following is an example of a double-stranded DNA (dsDNA) virus?',
-      options: ['Parvovirus', 'Reovirus', 'Rubella', 'Pox virus'],
-      correctAnswer: 3,
-    },
-    {
-      question:
-        'Parvovirus, which causes mild rashes, has what type of nucleic acid?',
-      options: ['dsDNA', 'ssDNA', 'dsRNA', 'ssRNA'],
-      correctAnswer: 1,
-    },
-    {
-      question: 'Reovirus, a cause of diarrhea, is classified as a:',
-      options: ['dsDNA virus', 'ssDNA virus', 'dsRNA virus', 'ssRNA virus'],
-      correctAnswer: 2,
-    },
-    {
-      question: 'Influenza and Rubella are examples of what type of virus?',
-      options: ['dsDNA virus', 'ssDNA virus', 'dsRNA virus', 'ssRNA virus'],
-      correctAnswer: 3,
-    },
-    {
-      question:
-        'The reverse transcription enzyme is a unique feature of which viruses?',
-      options: [
-        'Retrovirus and Hepatitis B',
-        'Pox virus and Herpes virus',
-        'Influenza and Paramyxoviruses',
-        'Adenovirus and Reovirus',
-      ],
-      correctAnswer: 0,
-    },
-    {
-      question:
-        'What is the most common shape of a polyhedral capsid, featuring 20 faces?',
-      options: ['Cube', 'Dodecahedron', 'Icosahedron', 'Octahedron'],
-      correctAnswer: 2,
-    },
-    {
-      question: 'Which of the following Hepatitis viruses is a naked virus?',
-      options: ['Hepatitis A', 'Hepatitis B', 'Hepatitis C', 'Hepatitis D'],
-      correctAnswer: 0,
-    },
-    {
-      question:
-        'Hepatitis B is distinguished from other hepatitis viruses by having a:',
-      options: ['RNA genome', 'DNA genome', 'Viroid structure', 'Complex capsid'],
-      correctAnswer: 1,
-    },
-    {
-      question: 'Paramyxoviruses are classified as:',
-      options: [
-        'DNA naked viruses',
-        'RNA naked viruses',
-        'DNA enveloped viruses',
-        'RNA enveloped viruses',
-      ],
-      correctAnswer: 3,
-    },
-    {
-      question: 'What is a key function of the viral capsid?',
-      options: [
-        'To provide mobility',
-        'To perform reverse transcription',
-        'To protect the genome from nucleases',
-        'To synthesize ATP',
-      ],
-      correctAnswer: 2,
-    },
-    {
-      question: 'The antigenic specificity of a virus is determined by its:',
-      options: ['Nucleic acid', 'Capsid', 'Envelope', 'Ribosomes'],
-      correctAnswer: 1,
-    },
 
-    // Bacteriophages and HIV
+// --- STATE MANAGEMENT ---
+const PRESET_QUESTIONS = [
+    // Core Concepts & Definitions
     {
-      question: 'Which bacterium is commonly used to study bacteriophages?',
-      options: [
-        'Staphylococcus aureus',
-        'Streptococcus pneumoniae',
-        'E. coli',
-        'Bacillus anthracis',
-      ],
-      correctAnswer: 2,
+        question: "Which statement accurately describes the formation of a cation?",
+        options: ["It is an exothermic process.", "The resulting ion is larger than its parent atom.", "It involves an atom losing one or more electrons.", "It involves an atom gaining one or more electrons."],
+        answer: "It involves an atom losing one or more electrons."
     },
     {
-      question:
-        'How many new copies does a bacteriophage typically form in 25 minutes inside E. coli?',
-      options: ['20', '50', '200', '1000'],
-      correctAnswer: 2,
+        question: "The formation of a uni-negative anion is typically what kind of process?",
+        options: ["Exothermic", "Endothermic", "Isothermic", "Neutral"],
+        answer: "Exothermic"
     },
     {
-      question: 'What is the approximate diameter of the HIV virus?',
-      options: [
-        '10 nanometers',
-        '50 nanometers',
-        '100 nanometers',
-        '250 nanometers',
-      ],
-      correctAnswer: 2,
+        question: "What are isobars?",
+        options: ["Atoms with the same number of protons but different neutrons.", "Atoms with the same number of neutrons but different protons.", "Atoms with the same mass number but different atomic numbers.", "Atoms with the same atomic number and mass number."],
+        answer: "Atoms with the same mass number but different atomic numbers."
     },
     {
-      question: 'Retroviruses are known to cause tumors in which animals?',
-      options: [
-        'Amphibians and reptiles',
-        'Fish and insects',
-        'Fowls, rodents, and cats',
-        'Primates and canines',
-      ],
-      correctAnswer: 2,
+        question: "The species ¹⁴C and ¹⁴N are examples of:",
+        options: ["Isotopes", "Isobars", "Isotones", "Allotropes"],
+        answer: "Isobars"
+    },
+     {
+        question: "The atoms ¹⁴C (Carbon-14) and ¹⁶O (Oxygen-16) both have 8 neutrons. They are examples of:",
+        options: ["Isotopes", "Isobars", "Isotones", "Allotropes"],
+        answer: "Isotones"
     },
     {
-      question: 'A viral envelope is described as being:',
-      options: [
-        'Permanent and virus-derived',
-        'Long-term and resistant to sunlight',
-        'Short-term and host-provided',
-        'Made of carbohydrates',
-      ],
-      correctAnswer: 2,
+        question: "Which of the following elements naturally exists as a single isotope (is mono-isotopic)?",
+        options: ["Carbon", "Chlorine", "Fluorine (F)", "Oxygen"],
+        answer: "Fluorine (F)"
+    },
+    // The Mole & Numerical Problem-Solving
+    {
+        question: "What is the value of Avogadro's Number (N_A)?",
+        options: ["6.022 x 10²²", "6.022 x 10²³", "3.011 x 10²³", "1.602 x 10⁻¹⁹"],
+        answer: "6.022 x 10²³"
     },
     {
-      question: 'What is the function of the GP120 spike on the HIV envelope?',
-      options: [
-        'Fusion with the host cell',
-        'Attachment to the host cell',
-        'Protecting the genome',
-        'Reverse transcription',
-      ],
-      correctAnswer: 1,
+        question: "What is the molar volume of any ideal gas at Standard Temperature and Pressure (STP)?",
+        options: ["22.414 dm³", "24.0 dm³", "1 dm³", "100 cm³"],
+        answer: "22.414 dm³"
     },
     {
-      question:
-        'Which HIV spike protein is responsible for fusion with the host cell membrane?',
-      options: ['GP41', 'GP120', 'Reverse Transcriptase', 'Matrix Protein'],
-      correctAnswer: 0,
+        question: "The simplest whole-number ratio of atoms in a compound is known as the:",
+        options: ["Molecular Formula", "Structural Formula", "Ionic Formula", "Empirical Formula"],
+        answer: "Empirical Formula"
     },
     {
-      question: 'How do animal viruses typically enter a host cell?',
-      options: [
-        'They inject only their genome',
-        'They enter the host cell completely',
-        'They attach but remain outside',
-        'They divide the host cell',
-      ],
-      correctAnswer: 1,
+        question: "If the empirical formula of a compound is CH₂O and its molecular mass is 180 g/mol, what is its molecular formula?",
+        options: ["C₂H₄O₂", "C₃H₆O₃", "C₆H₁₂O₆", "C₇H₁₄O₇"],
+        answer: "C₆H₁₂O₆"
     },
     {
-      question:
-        'A common effect of plant viruses on their hosts is the formation of:',
-      options: ['Spores', 'Tumors', 'Flowers', 'Deep roots'],
-      correctAnswer: 1,
+        question: "In combustion analysis, what substance is commonly used to absorb H₂O?",
+        options: ["Potassium Hydroxide (KOH)", "Magnesium perchlorate (Mg(ClO₄)₂)", "Sodium Chloride (NaCl)", "Sulfuric Acid (H₂SO₄)"],
+        answer: "Magnesium perchlorate (Mg(ClO₄)₂)"
+    },
+    // Stoichiometry
+    {
+        question: "The reactant that is completely consumed in a chemical reaction and limits the amount of product formed is called the:",
+        options: ["Excess Reactant", "Catalyst", "Limiting Reactant", "Product"],
+        answer: "Limiting Reactant"
     },
     {
-      question: 'How many tail fibers does a typical bacteriophage possess?',
-      options: ['Two', 'Four', 'Six', 'Eight'],
-      correctAnswer: 2,
+        question: "The maximum amount of product that can be formed from the given amounts of reactants is known as the:",
+        options: ["Actual Yield", "Theoretical Yield", "Percentage Yield", "Experimental Yield"],
+        answer: "Theoretical Yield"
     },
+    {
+        question: "Which of the following is NOT a reason for low actual yield in an experiment?",
+        options: ["Side reactions occurring", "Incomplete reaction (equilibrium)", "Perfectly efficient filtration and crystallization", "Mechanical losses during transfer"],
+        answer: "Perfectly efficient filtration and crystallization"
+    },
+    // Atomic Structure - Foundational Particles
+    {
+        question: "Who is credited with the discovery of positive rays (canal rays)?",
+        options: ["J.J. Thomson", "James Chadwick", "Niels Bohr", "Eugene Goldstein"],
+        answer: "Eugene Goldstein"
+    },
+    {
+        question: "Where do positive rays originate in a modified Crookes tube?",
+        options: ["From the cathode surface", "From the anode surface", "From the residual gas molecules in the tube", "From outside the tube"],
+        answer: "From the residual gas molecules in the tube"
+    },
+    {
+        question: "How does the charge-to-mass (e/m) ratio of positive rays compare to that of electrons?",
+        options: ["It is identical.", "It is considerably larger.", "It is considerably smaller.", "It is always zero."],
+        answer: "It is considerably smaller."
+    },
+    {
+        question: "The e/m ratio of positive rays is not constant because:",
+        options: ["Their charge changes.", "Their mass depends on the gas used.", "The electric field varies.", "The cathode material changes."],
+        answer: "Their mass depends on the gas used."
+    },
+    {
+        question: "Which gas, when used in a discharge tube, produces positive rays with the highest e/m ratio?",
+        options: ["Helium", "Neon", "Hydrogen", "Oxygen"],
+        answer: "Hydrogen"
+    },
+    {
+        question: "Which subatomic particle has a relative mass of approximately 1/1836th of a proton?",
+        options: ["Neutron", "Positron", "Electron", "Quark"],
+        answer: "Electron"
+    },
+    // Atomic Structure - Bohr's Model & Spectra
+    {
+        question: "According to Bohr's model, what happens when an electron jumps from a higher energy orbit (E₂) to a lower energy orbit (E₁)?",
+        options: ["It absorbs a photon of energy E₂ + E₁.", "It emits a photon of energy E₂ - E₁.", "It absorbs a photon of energy E₂ - E₁.", "It remains in a stable state without any energy change."],
+        answer: "It emits a photon of energy E₂ - E₁."
+    },
+    {
+        question: "The spectral lines in the Lyman series of the hydrogen spectrum are found in which region?",
+        options: ["Visible", "Infrared", "Ultraviolet", "Microwave"],
+        answer: "Ultraviolet"
+    },
+    {
+        question: "An electron transition in a hydrogen atom results in the emission of a photon of green light. What is the principal quantum number (n) of the final state?",
+        options: ["n=1", "n=2", "n=3", "n=4"],
+        answer: "n=2"
+    },
+    {
+        question: "In the Bohr model, the radius of an orbit (r_n) is directly proportional to:",
+        options: ["n", "1/n", "n²", "1/n²"],
+        answer: "n²"
+    },
+    {
+        question: "In the Bohr model, how does the energy difference between consecutive orbits change as 'n' increases?",
+        options: ["It increases.", "It decreases.", "It stays the same.", "It becomes zero."],
+        answer: "It decreases."
+    },
+    // Quantum-Mechanical Model
+    {
+        question: "Which quantum number primarily determines the energy level and size of an orbital?",
+        options: ["Azimuthal (l)", "Magnetic (m_l)", "Principal (n)", "Spin (m_s)"],
+        answer: "Principal (n)"
+    },
+    {
+        question: "What is the shape of a p-orbital?",
+        options: ["Spherical", "Dumbbell", "Cloverleaf", "Complex multi-lobed"],
+        answer: "Dumbbell"
+    },
+    {
+        question: "For a given principal quantum number n=3, what are the possible values for the azimuthal quantum number (l)?",
+        options: ["0, 1, 2, 3", "1, 2, 3", "0, 1, 2", "-2, -1, 0, 1, 2"],
+        answer: "0, 1, 2"
+    },
+    {
+        question: "If the azimuthal quantum number (l) is 2, what are the possible values for the magnetic quantum number (m_l)?",
+        options: ["0, 1, 2", "-1, 0, +1", "0", "-2, -1, 0, +1, +2"],
+        answer: "-2, -1, 0, +1, +2"
+    },
+    {
+        question: "Which of the following sets of quantum numbers (n, l, m_l, m_s) is NOT allowed?",
+        options: ["(3, 2, -1, +1/2)", "(4, 0, 0, -1/2)", "(2, 2, 1, +1/2)", "(5, 1, 0, +1/2)"],
+        answer: "(2, 2, 1, +1/2)"
+    },
+    {
+        question: "How many orbitals are in a d-subshell (l=2)?",
+        options: ["1", "3", "5", "7"],
+        answer: "5"
+    },
+    {
+        question: "The d(z²) orbital is unique because its shape consists of a dumbbell along the z-axis and a:",
+        options: ["Second dumbbell on the x-axis", "Torus (donut shape) in the xy-plane", "Four lobes between the axes", "Spherical node"],
+        answer: "Torus (donut shape) in the xy-plane"
+    },
+    // Electron Arrangement
+    {
+        question: "The Aufbau principle states that electrons fill orbitals in order of:",
+        options: ["Increasing atomic number", "Decreasing energy", "Increasing energy", "Alphabetical order of subshell"],
+        answer: "Increasing energy"
+    },
+    {
+        question: "What is the maximum number of electrons an orbital can hold, according to the Pauli Exclusion Principle?",
+        options: ["1", "2", "6", "10"],
+        answer: "2"
+    },
+    {
+        question: "Hund's rule states that for degenerate orbitals, electrons will:",
+        options: ["Pair up immediately", "Occupy separate orbitals with parallel spins before pairing", "Occupy separate orbitals with opposite spins before pairing", "Only occupy one orbital per subshell"],
+        answer: "Occupy separate orbitals with parallel spins before pairing"
+    },
+    {
+        question: "What is the correct electronic configuration for a neutral Copper atom (Cu, Z=29)?",
+        options: ["[Ar] 4s² 3d⁹", "[Ar] 4s¹ 3d¹⁰", "[Ar] 4s⁰ 3d¹¹", "[Ar] 3d⁹ 4s²"],
+        answer: "[Ar] 4s¹ 3d¹⁰"
+    },
+    {
+        question: "What is the correct electronic configuration for the Fe²⁺ ion? (Fe, Z=26)",
+        options: ["[Ar] 4s² 3d⁴", "[Ar] 4s⁰ 3d⁶", "[Ar] 4s¹ 3d⁵", "[Ar] 3d⁵"],
+        answer: "[Ar] 4s⁰ 3d⁶"
+    },
+    {
+        question: "The concept that half-filled and completely-filled subshells have extra stability explains the anomalous configuration of:",
+        options: ["Sodium and Chlorine", "Chromium and Copper", "Helium and Neon", "Iron and Cobalt"],
+        answer: "Chromium and Copper"
+    },
+    // Mixed Concept Questions
+    {
+        question: "An ion that is smaller than its parent atom and is formed through an endothermic process is a(n):",
+        options: ["Anion", "Cation", "Isotope", "Molecule"],
+        answer: "Cation"
+    },
+    {
+        question: "Calculate the number of moles in 32 grams of Methane (CH₄). (Atomic masses: C=12, H=1)",
+        options: ["1 mole", "2 moles", "0.5 moles", "4 moles"],
+        answer: "2 moles"
+    },
+    {
+        question: "The Balmer series corresponds to electron transitions ending at n=2. These transitions primarily emit light in what region of the spectrum?",
+        options: ["Ultraviolet", "Infrared", "Visible", "X-ray"],
+        answer: "Visible"
+    },
+    {
+        question: "An orbital with n=4 and l=1 is designated as:",
+        options: ["4s", "4p", "4d", "4f"],
+        answer: "4p"
+    },
+    {
+        question: "Which principle or rule dictates the filling order of orbitals using the (n+l) value?",
+        options: ["Hund's Rule", "Pauli Exclusion Principle", "Aufbau Principle", "Bohr's Postulates"],
+        answer: "Aufbau Principle"
+    },
+    {
+        question: "The discovery of the neutron is credited to:",
+        options: ["J.J. Thomson", "Ernest Rutherford", "Eugene Goldstein", "James Chadwick"],
+        answer: "James Chadwick"
+    },
+    {
+        question: "Which of the following describes a nodal plane?",
+        options: ["A region of maximum electron probability.", "A region where the probability of finding an electron is exactly zero.", "The path an electron takes around the nucleus.", "The boundary surface of an orbital."],
+        answer: "A region where the probability of finding an electron is exactly zero."
+    },
+    {
+        question: "How many p-orbitals exist in a given energy level (for n > 1)?",
+        options: ["1", "3", "5", "7"],
+        answer: "3"
+    },
+    {
+        question: "The percentage yield is calculated as:",
+        options: ["(Theoretical Yield / Actual Yield) x 100", "(Actual Yield / Theoretical Yield) x 100", "Theoretical Yield - Actual Yield", "Actual Yield + Theoretical Yield"],
+        answer: "(Actual Yield / Theoretical Yield) x 100"
+    },
+    {
+        question: "The spin quantum number (m_s) can have which of the following values?",
+        options: ["0 and 1", "-1, 0, +1", "Only +1/2", "+1/2 and -1/2"],
+        answer: "+1/2 and -1/2"
+    },
+    {
+        question: "Which subatomic particle has a positive charge and a mass of approximately 1 amu?",
+        options: ["Electron", "Positron", "Proton", "Neutron"],
+        answer: "Proton"
+    },
+    {
+        question: "The Paschen series in the hydrogen spectrum involves electron transitions that end at which principal quantum number?",
+        options: ["n=1", "n=2", "n=3", "n=4"],
+        answer: "n=3"
+    },
+    {
+        question: "Which orbital shape is described as 'cloverleaf'?",
+        options: ["s-orbital", "p-orbital", "d-orbital", "f-orbital"],
+        answer: "d-orbital"
+    },
+    {
+        question: "When forming a cation from a main group element, electrons are removed from the:",
+        options: ["Innermost shell", "Outermost shell", "d-subshell only", "s-subshell only"],
+        answer: "Outermost shell"
+    },
+    {
+        question: "Which of the following is an example of a molecular ion?",
+        options: ["Na⁺", "Cl⁻", "CH₄⁺", "He"],
+        answer: "CH₄⁺"
+    },
+    {
+        question: "How many neutrons are in the isotope Bromine-81 (³⁵Br⁸¹)?",
+        options: ["35", "81", "46", "116"],
+        answer: "46"
+    },
+    {
+        question: "The mass of an atom is concentrated almost entirely in its:",
+        options: ["Electron cloud", "Outermost shell", "Nucleus", "Orbitals"],
+        answer: "Nucleus"
+    },
+    {
+        question: "Planck's theory states that energy is emitted or absorbed in discrete packets called:",
+        options: ["Electrons", "Protons", "Quanta", "Orbits"],
+        answer: "Quanta"
+    },
+    {
+        question: "The angular momentum of an electron in a Bohr orbit is an integral multiple of:",
+        options: ["h", "h / 2π", "2π / h", "h²"],
+        answer: "h / 2π"
+    },
+    {
+        question: "The f-subshell (l=3) first appears in which principal energy level?",
+        options: ["n=2", "n=3", "n=4", "n=5"],
+        answer: "n=4"
+    },
+    {
+        question: "How many unpaired electrons are in a neutral nitrogen atom (Z=7)?",
+        options: ["0", "1", "2", "3"],
+        answer: "3"
+    },
+    {
+        question: "A positive ion produced from hydrogen gas (H₂) is simply a(n):",
+        options: ["Electron", "Neutron", "Hydride ion", "Proton"],
+        answer: "Proton"
+    },
+    {
+        question: "Which of the following is NOT a property of positive rays?",
+        options: ["They carry a positive charge.", "They are deflected by electric fields.", "They have a constant e/m ratio.", "Their penetration power is very low."],
+        answer: "They have a constant e/m ratio."
+    },
+    {
+        question: "A compound contains 63.63% Nitrogen and 36.36% Oxygen. What is its empirical formula? (Atomic masses: N=14, O=16)",
+        options: ["NO", "NO₂", "N₂O", "N₂O₅"],
+        answer: "N₂O"
+    },
+    {
+        question: "The formula: Molecular Formula = n × (Empirical Formula) is known as:",
+        options: ["The Ratio Formula", "The Linking Formula", "The Molar Formula", "Avogadro's Law"],
+        answer: "The Linking Formula"
+    },
+    {
+        question: "In the mass-mass calculation steps for stoichiometry, what is the first step?",
+        options: ["Convert moles of reactant to mass.", "Use the mole ratio from the balanced equation.", "Convert the given mass of a substance to moles.", "Calculate the percentage yield."],
+        answer: "Convert the given mass of a substance to moles."
+    },
+    {
+        question: "The 'm' in the e/m ratio for a canal ray refers to the mass of:",
+        options: ["A single electron", "A single proton", "The ion of the gas in the tube", "The cathode material"],
+        answer: "The ion of the gas in the tube"
+    },
+    {
+        question: "Which orbital is filled after the 3p orbital, according to the Aufbau principle?",
+        options: ["3d", "4s", "4p", "3s"],
+        answer: "4s"
+    },
+    {
+        question: "A set of orbitals with the same energy level (e.g., the three p-orbitals) are called:",
+        options: ["Isotopes", "Degenerate orbitals", "Valence orbitals", "Core orbitals"],
+        answer: "Degenerate orbitals"
+    },
+    {
+        question: "The defining characteristic of an element is its:",
+        options: ["Mass number", "Number of neutrons", "Atomic number (number of protons)", "Number of isotopes"],
+        answer: "Atomic number (number of protons)"
+    },
+    {
+        question: "In which list are all elements mono-isotopic?",
+        options: ["Gold, Carbon, Sodium", "Fluorine, Iodine, Arsenic", "Oxygen, Nitrogen, Fluorine", "Sodium, Chlorine, Gold"],
+        answer: "Fluorine, Iodine, Arsenic"
+    },
+    {
+        question: "A compound has an empirical formula of N₂O. This represents the:",
+        options: ["Actual number of atoms in the molecule.", "Simplest whole-number ratio of atoms.", "Total mass of the compound.", "Number of covalent bonds."],
+        answer: "Simplest whole-number ratio of atoms."
+    },
+    {
+        question: "The concept that 'orbits are not equally spaced' is a key conclusion from which aspect of Bohr's model?",
+        options: ["The energy formula (E_n ∝ 1/n²)", "The radius formula (r_n ∝ n²)", "The quantization of angular momentum", "The stability of stationary states"],
+        answer: "The radius formula (r_n ∝ n²)"
+    },
+    {
+        question: "What is the maximum number of electrons that can be accommodated in a shell with principal quantum number n=3?",
+        options: ["2", "8", "18", "32"],
+        answer: "18"
+    },
+    {
+        question: "Which of the following orbitals does not exist?",
+        options: ["1s", "3d", "2d", "4f"],
+        answer: "2d"
+    },
+    {
+        question: "The probability of finding an electron is uniform in all directions for which type of orbital?",
+        options: ["p-orbital", "s-orbital", "d-orbital", "f-orbital"],
+        answer: "s-orbital"
+    },
+    {
+        question: "What is the total number of covalent bonds in one molecule of methane (CH₄)?",
+        options: ["1", "2", "3", "4"],
+        answer: "4"
+    },
+    {
+        question: "If 10g of methane (molar mass = 16 g/mol) are used, how many molecules of methane are present? (N_A = 6.022 x 10²³)",
+        options: ["3.76 x 10²³", "6.022 x 10²³", "1.6 x 10²⁴", "0.625"],
+        answer: "3.76 x 10²³"
+    },
+    {
+        question: "The modern quantum-mechanical model describes an electron's location in terms of:",
+        options: ["A fixed circular path", "A region of high probability (orbital)", "An elliptical orbit", "A planetary model"],
+        answer: "A region of high probability (orbital)"
+    },
+    {
+        question: "For the p-subshell (l=1), the magnetic quantum number (m_l) can have values of -1, 0, and +1. This indicates that there are:",
+        options: ["Three p-orbitals with different shapes", "Three p-orbitals with different sizes", "Three p-orbitals with different orientations", "One p-orbital that can hold three electrons"],
+        answer: "Three p-orbitals with different orientations"
+    },
+    {
+        question: "An element has the electron configuration [Ar] 4s² 3d⁵. This element is:",
+        options: ["Chromium (Cr)", "Manganese (Mn)", "Iron (Fe)", "Vanadium (V)"],
+        answer: "Manganese (Mn)"
+    },
+    {
+        question: "A 'last-in, first-out' logic for removing electrons during ionization is a common fallacy for which group of elements?",
+        options: ["Alkali metals", "Halogens", "Noble gases", "Transition metals"],
+        answer: "Transition metals"
+    },
+    {
+        question: "The chemical properties of isotopes of an element are nearly identical because they have the same:",
+        options: ["Mass number", "Number of neutrons", "Number of electrons and protons", "Physical properties"],
+        answer: "Number of electrons and protons"
+    },
+    {
+        question: "What is the correct calculation for the number of moles (n) from a given number of particles (N)?",
+        options: ["n = N × N_A", "n = N_A / N", "n = N / N_A", "n = N + N_A"],
+        answer: "n = N / N_A"
+    },
+    {
+        question: "The phenomenon where spectral lines split in a magnetic field is known as the:",
+        options: ["Photoelectric effect", "Compton effect", "Zeeman effect", "Aufbau principle"],
+        answer: "Zeeman effect"
+    },
+    {
+        question: "How many nodal planes does a p_x orbital have?",
+        options: ["0", "1", "2", "3"],
+        answer: "1"
+    },
+    {
+        question: "The formation of poly-negative ions (like O²⁻ from O⁻) is an endothermic process due to:",
+        options: ["Increased nuclear charge", "Repulsion between the negative ion and the incoming electron", "The small size of the atom", "The high ionization energy"],
+        answer: "Repulsion between the negative ion and the incoming electron"
+    },
+    {
+        question: "Which of these represents a set of isoelectronic species (having the same number of electrons)?",
+        options: ["Na⁺, Mg²⁺, F⁻", "Li, Be, B", "Cl⁻, Br⁻, I⁻", "Fe²⁺, Fe³⁺, Co²⁺"],
+        answer: "Na⁺, Mg²⁺, F⁻"
+    },
+    {
+        question: "Which of the following is the 'cardinal rule' for ionizing transition metals?",
+        options: ["Remove electrons from the d-orbital first.", "Remove electrons from the highest principal quantum number (n) shell first.", "Remove electrons in the reverse order of filling.", "Remove one electron from s and one from d."],
+        answer: "Remove electrons from the highest principal quantum number (n) shell first."
+    },
+    {
+        question: "The Brackett series in the hydrogen spectrum, found in the infrared region, corresponds to transitions ending at:",
+        options: ["n=2", "n=3", "n=4", "n=5"],
+        answer: "n=4"
+    },
+    {
+        question: "The quantum number 'l' determines the shape of the orbital. What is the letter designation for l=3?",
+        options: ["s", "p", "d", "f"],
+        answer: "f"
+    },
+    {
+        question: "The energy of a photon is directly proportional to its:",
+        options: ["Wavelength", "Velocity", "Frequency", "Amplitude"],
+        answer: "Frequency"
+    },
+    {
+        question: "Which of the d-orbitals have their lobes oriented *along* the coordinate axes?",
+        options: ["d(xy), d(yz), d(xz)", "d(x²-y²), d(z²)", "All five d-orbitals", "Only the d(xy) orbital"],
+        answer: "d(x²-y²), d(z²)"
+    }
+];
 
-    // Cellular Respiration
-    {
-      question:
-        'What is the primary function of the electron transport chain in mitochondria?',
-      options: [
-        'To directly synthesize ATP',
-        'To create a proton gradient',
-        'To break down glucose',
-        'To oxidize pyruvate',
-      ],
-      correctAnswer: 1,
-    },
-    {
-      question:
-        'In which type of cells does oxidative phosphorylation NOT occur?',
-      options: [
-        'Liver cells',
-        'Muscle cells',
-        'Neurons',
-        'Erythrocytes (Red Blood Cells)',
-      ],
-      correctAnswer: 3,
-    },
-    {
-      question: 'Which process generates the maximum amount of ATP?',
-      options: [
-        'Glycolysis',
-        'Krebs Cycle',
-        'Fermentation',
-        'Oxidative phosphorylation',
-      ],
-      correctAnswer: 3,
-    },
-    {
-      question:
-        'How many ATP molecules are produced from one molecule of FADH₂ in oxidative phosphorylation?',
-      options: ['1 ATP', '2 ATP', '3 ATP', '4 ATP'],
-      correctAnswer: 1,
-    },
-    {
-      question:
-        'How many ATP molecules are produced from one molecule of NADH₂ in oxidative phosphorylation?',
-      options: ['1 ATP', '2 ATP', '3 ATP', '4 ATP'],
-      correctAnswer: 2,
-    },
-    {
-      question:
-        'An increase in ATP concentration will inhibit the action of which key glycolytic enzyme?',
-      options: [
-        'Hexokinase',
-        'Phosphofructokinase',
-        'Pyruvate kinase',
-        'Aldolase',
-      ],
-      correctAnswer: 1,
-    },
-    {
-      question: 'An increased concentration of NADH will inhibit which enzyme?',
-      options: [
-        'Phosphofructokinase',
-        'Pyruvate decarboxylate',
-        'ATP synthase',
-        'Hexokinase',
-      ],
-      correctAnswer: 1,
-    },
-    {
-      question:
-        'What molecule serves as an intermediate between respiration and photosynthesis?',
-      options: ['Pyruvate', 'Acetyl-CoA', 'G3P', 'Glucose'],
-      correctAnswer: 2,
-    },
-    {
-      question: 'The process of deamination primarily occurs in which organ?',
-      options: ['Kidneys', 'Spleen', 'Liver', 'Pancreas'],
-      correctAnswer: 2,
-    },
-    {
-      question: 'In which part of the cell does glycolysis occur?',
-      options: [
-        'Mitochondrial matrix',
-        'Inner mitochondrial membrane',
-        'Cytoplasm',
-        'Nucleus',
-      ],
-      correctAnswer: 2,
-    },
-    {
-      question:
-        'What is the total number of ATPs formed in aerobic respiration, and how many come from the electron transport chain?',
-      options: [
-        '38 total, 34 from ETC',
-        '36 total, 32 from ETC',
-        '32 total, 28 from ETC',
-        '30 total, 26 from ETC',
-      ],
-      correctAnswer: 0, // Corrected from 1, based on common textbook values (38/34)
-    },
-    {
-      question: 'In chemoosmosis, what is the path of ion flow?',
-      options: [
-        'Stroma to lumen',
-        'Lumen to stroma',
-        'Matrix to intermembrane space',
-        'Cytoplasm to matrix',
-      ],
-      correctAnswer: 2, // Corrected, should be matrix to intermembrane space for mitochondria
-    },
-    {
-      question: 'During glycolysis, which molecule undergoes dehydrogenation?',
-      options: [
-        'Glucose',
-        'Pyruvate',
-        'G3P',
-        'Fructose-1,6-bisphosphate',
-      ],
-      correctAnswer: 2,
-    },
-    {
-      question: 'What is NOT essential for the process of glycolysis?',
-      options: ['Enzymes', 'Glucose', 'ATP', 'Oxygen'],
-      correctAnswer: 3,
-    },
-    {
-      question:
-        'The electron transport chain takes electrons from NADH and FADH₂ and passes them to what molecule?',
-      options: ['ATP synthase', 'Cytochrome c', 'Coenzyme Q', 'Oxygen'],
-      correctAnswer: 2,
-    },
-    {
-      question: 'What happens to carriers in the electron transport chain?',
-      options: [
-        'They are first oxidized, then reduced',
-        'They are first reduced, then oxidized',
-        'They remain neutral',
-        'They are permanently oxidized',
-      ],
-      correctAnswer: 1,
-    },
-    {
-      question: 'Where are the carriers of the respiratory chain located?',
-      options: [
-        'Cytoplasm',
-        'Outer mitochondrial membrane',
-        'Inner mitochondrial membrane',
-        'Mitochondrial matrix',
-      ],
-      correctAnswer: 2,
-    },
-    {
-      question:
-        'What is the terminal electron acceptor in the mitochondrial electron transport chain?',
-      options: ['Water', 'Nitrate', 'Sulfate', 'Oxygen'],
-      correctAnswer: 3,
-    },
-    {
-      question:
-        'What are the final products of the complete oxidation of pyruvate in aerobic respiration?',
-      options: [
-        'Lactic acid and ATP',
-        'Ethanol and CO₂',
-        'CO₂ and H₂O',
-        'Glucose and Oxygen',
-      ],
-      correctAnswer: 2,
-    },
-    {
-      question: 'What is the template used during reverse transcription?',
-      options: ['Host DNA', 'Viral DNA', 'Host RNA', 'Viral RNA'],
-      correctAnswer: 3,
-    },
-    {
-      question:
-        'Which enzyme is responsible for moving a phosphate group from ATP to glucose?',
-      options: ['Polymerase', 'Ligase', 'Kinase', 'Nuclease'],
-      correctAnswer: 2,
-    },
-    {
-      question: 'Where are the enzymes for the Krebs cycle located?',
-      options: [
-        'Cytoplasm',
-        'Outer mitochondrial membrane',
-        'Inner mitochondrial membrane',
-        'Mitochondrial matrix',
-      ],
-      correctAnswer: 3,
-    },
+// FIX: Added `allQuestions` and other state variables from index.tsx to consolidate state management.
+let allQuestions = PRESET_QUESTIONS;
+let currentTestQuestions = [];
+let originalTestQuestions = [];
+let wrongAnswers = [];
+let currentQuestionIndex = 0;
+let score = 0;
+let timer;
+let timeLeft = 0;
 
-    // Miscellaneous and Mixed Topics
-    {
-      question: 'What type of molecule is ATP?',
-      options: ['A protein', 'A carbohydrate', 'A lipid', 'A nucleotide'],
-      correctAnswer: 3,
-    },
-    {
-      question:
-        'What combination of drugs is used for the prevention and treatment of Hepatitis C?',
-      options: [
-        'Penicillin and Aspirin',
-        'Alpha-interferon and Ribavirin',
-        'Ibuprofen and Acetaminophen',
-        'Insulin and Metformin',
-      ],
-      correctAnswer: 1,
-    },
-    {
-      question: 'Which viral disease is considered the most widely spread?',
-      options: ['Polio', 'Hepatitis B', 'Influenza', 'Smallpox'],
-      correctAnswer: 2,
-    },
-    {
-      question: 'The polio virus primarily affects which part of the body?',
-      options: [
-        'The respiratory system',
-        'The liver',
-        'The digestive tract',
-        'The spinal cord and motor neurons',
-      ],
-      correctAnswer: 3,
-    },
-    {
-      question:
-        'What kind of molecule is the provirus of HEV (Hepatitis E Virus)?',
-      options: [
-        'single-stranded RNA',
-        'double-stranded DNA',
-        'a protein',
-        'a complex carbohydrate',
-      ],
-      correctAnswer: 0,
-    },
-    {
-      question: 'What substance controls viral infections like hepatitis?',
-      options: ['Antibiotics', 'Histamines', 'Interferon', 'Glucagon'],
-      correctAnswer: 2,
-    },
-    {
-      question:
-        'What does the term "filterable nature" of a virus, as described by early scientists, mean?',
-      options: [
-        'It can be seen with a light microscope',
-        'It can pass through filters that block bacteria',
-        'It dissolves in water',
-        'It crystallizes easily',
-      ],
-      correctAnswer: 1,
-    },
-    {
-      question:
-        'Adenovirus and Herpes virus are examples of which type of virus?',
-      options: [
-        'ssRNA viruses',
-        'dsRNA viruses',
-        'ssDNA viruses',
-        'dsDNA viruses',
-      ],
-      correctAnswer: 3,
-    },
-    {
-      question: 'Which of these is NOT a function of the viral capsid?',
-      options: [
-        'Protecting the genome',
-        'Determining antigenic specificity',
-        'Aiding in attachment',
-        'Synthesizing viral proteins',
-      ],
-      correctAnswer: 3,
-    },
-    {
-      question: 'What is the role of Coenzyme Q in the electron transport chain?',
-      options: [
-        'It is the final electron acceptor',
-        'It pumps protons into the lumen',
-        'It accepts electrons from NADH and FADH₂',
-        'It synthesizes ATP',
-      ],
-      correctAnswer: 2,
-    },
-    {
-      question:
-        'The fact that glycolysis enzymes are in the cytoplasm explains why...',
-      options: [
-        'It requires oxygen',
-        'It produces a large amount of ATP',
-        'It occurs in the cytoplasm',
-        'It is the final stage of respiration',
-      ],
-      correctAnswer: 2,
-    },
-    {
-      question:
-        'Which statement about the relationship between C and B in the respiratory chain (B, C, A, A3) is correct?',
-      options: [
-        'B oxidizes C',
-        'C oxidizes B',
-        'They do not interact',
-        'B and C reduce each other',
-      ],
-      correctAnswer: 0,
-    },
-    {
-      question:
-        'What cellular process is directly driven by the proton gradient created by the ETC?',
-      options: [
-        'Glycolysis',
-        'Krebs cycle',
-        'Chemiosmosis (ATP synthesis)',
-        'Fermentation',
-      ],
-      correctAnswer: 2,
-    },
-    {
-      question: 'The term "provirus" refers to...',
-      options: [
-        'A virus before it becomes infectious',
-        'Viral genetic material integrated into the host genome',
-        'The protein shell of a virus',
-        'A virus that infects bacteria',
-      ],
-      correctAnswer: 1,
-    },
-    {
-      question: 'If a virus is "naked," what does it lack?',
-      options: ['A capsid', 'Nucleic acid', 'An envelope', 'Spikes'],
-      correctAnswer: 2,
-    },
-    // Adding more variations to reach over 100
-    {
-      question: 'What is the size of the Pox virus relative to other viruses?',
-      options: [
-        'It is the smallest virus',
-        'It is average-sized',
-        'It is the largest virus',
-        'Its size is unknown',
-      ],
-      correctAnswer: 2,
-    },
-    {
-      question: 'Which disease did Edward Jenner develop a vaccine for?',
-      options: ['Rabies', 'Smallpox', 'Cholera', 'Anthrax'],
-      correctAnswer: 1,
-    },
-    {
-      question:
-        'What was a key finding of Ivanovsky regarding the Tobacco Mosaic Virus (TMV)?',
-      options: [
-        'It was a type of bacteria',
-        'It was not infectious',
-        'It demonstrated a filterable nature',
-        'It could be killed by heat',
-      ],
-      correctAnswer: 2,
-    },
-    {
-      question: 'Viroids are infectious agents primarily found in:',
-      options: ['Animals', 'Bacteria', 'Plants', 'Fungi'],
-      correctAnswer: 2,
-    },
-    {
-      question:
-        'The Polio virus, which is circular and naked, has what type of genome?',
-      options: ['dsDNA', 'ssDNA', 'RNA', 'Protein'],
-      correctAnswer: 2,
-    },
-    {
-      question: 'The adenovirus has which characteristic shape?',
-      options: ['Helical', 'Enveloped', 'Polyhedral', 'Complex'],
-      correctAnswer: 2,
-    },
-    {
-      question:
-        'Which of the following viruses contains a double-stranded RNA (dsRNA) genome?',
-      options: ['Herpes virus', 'Reovirus', 'Influenza virus', 'Parvovirus'],
-      correctAnswer: 1,
-    },
-    {
-      question:
-        'The enzyme reverse transcriptase is NOT found in which virus?',
-      options: ['Retrovirus', 'Hepatitis B', 'HIV', 'Influenza'],
-      correctAnswer: 3,
-    },
-    {
-      question: 'The host provides which component for an enveloped virus?',
-      options: [
-        'The capsid',
-        'The nucleic acid',
-        'The envelope',
-        'The matrix protein',
-      ],
-      correctAnswer: 2,
-    },
-    {
-      question: 'The GP41 and GP120 spikes are characteristic of which virus?',
-      options: ['Influenza', 'Bacteriophage', 'HIV', 'Hepatitis A'],
-      correctAnswer: 2,
-    },
-    {
-      question:
-        'What is the yield of ATP from one molecule of FADH₂ compared to one molecule of NADH₂?',
-      options: [
-        'It yields more ATP',
-        'It yields less ATP',
-        'It yields the same amount',
-        'FADH₂ does not yield ATP',
-      ],
-      correctAnswer: 1,
-    },
-    {
-      question:
-        'Why do erythrocytes (red blood cells) not perform oxidative phosphorylation?',
-      options: [
-        'They lack a nucleus',
-        'They lack mitochondria',
-        'They lack cytoplasm',
-        'They lack a cell membrane',
-      ],
-      correctAnswer: 1,
-    },
-    {
-      question:
-        'G3P is a key intermediate that can form all of the following EXCEPT:',
-      options: [
-        'Glucose',
-        'Phosphate',
-        'Chloroplast components',
-        'Amino acids',
-      ],
-      correctAnswer: 3,
-    },
-    {
-      question: 'Why does glycolysis occur in the cytoplasm?',
-      options: [
-        'It requires mitochondria',
-        'The necessary enzymes are located there',
-        'It is an aerobic process',
-        'It needs a high oxygen concentration',
-      ],
-      correctAnswer: 1,
-    },
-    {
-      question: 'The process of a kinase enzyme involves:',
-      options: [
-        'Joining two molecules',
-        'Cutting DNA',
-        'Transferring a phosphate group',
-        'Building a polymer',
-      ],
-      correctAnswer: 2,
-    },
-    {
-      question:
-        'Which statement accurately describes the first step of the electron transport chain?',
-      options: [
-        'Oxygen accepts electrons',
-        'Coenzyme Q accepts electrons from NADH and FADH₂',
-        'ATP is synthesized',
-        'Water is split',
-      ],
-      correctAnswer: 1,
-    },
-    {
-      question: 'The provirus of HIV is what type of molecule?',
-      options: ['ssRNA', 'dsDNA', 'Protein', 'Lipid'],
-      correctAnswer: 1,
-    },
-    {
-      question: 'What is the primary role of interferons in the body?',
-      options: [
-        'To digest food',
-        'To transport oxygen',
-        'To control viral infections',
-        'To regulate blood sugar',
-      ],
-      correctAnswer: 2,
-    },
-    {
-      question:
-        'Which scientist is associated with the postulate "Viruses are soluble living germs"?',
-      options: ['Louis Pasteur', 'Wendell Stanley', 'Ivanovsky', 'Edward Jenner'],
-      correctAnswer: 2,
-    },
-    {
-      question: 'What is a defining characteristic of a retrovirus?',
-      options: [
-        'It has a DNA genome',
-        'It only infects plants',
-        'It uses reverse transcription',
-        'It has a complex, multi-layered capsid',
-      ],
-      correctAnswer: 2,
-    },
-    {
-      question: 'A viral envelope is sensitive to what environmental factor?',
-      options: ['Darkness', 'Cold temperatures', 'High pressure', 'Sunlight'],
-      correctAnswer: 3,
-    },
-    {
-      question:
-        'In the respiratory chain sequence (B, C, A, A3), what does A oxidize?',
-      options: ['B', 'C', 'A3', 'Nothing'],
-      correctAnswer: 1,
-    },
-    {
-      question:
-        'What is the main outcome of anaerobic respiration (like glycolysis alone) compared to aerobic respiration?',
-      options: [
-        'More ATP is produced',
-        'Far less ATP is produced',
-        'Pyruvate is fully oxidized',
-        'Oxygen is used as an electron acceptor',
-      ],
-      correctAnswer: 1,
-    },
-  ];
+// --- CORE LOGIC ---
 
-  // --- Functions ---
-
-  const showScreen = (screenName) => {
-    Object.values(screens).forEach((screen) =>
-      screen.classList.remove('active')
-    );
-    screens[screenName].classList.add('active');
-    homeBtn.style.display = screenName === 'quiz' ? 'none' : 'block';
-  };
-
-  const updateSetupUI = () => {
-    availableQuestionsCountSpan.textContent = allQuestions.length;
+/**
+ * Initializes the application.
+ */
+function init() {
+    // FIX: Use `allQuestions` to set the max attribute dynamically.
     numQuestionsInput.max = allQuestions.length;
-    if (parseInt(numQuestionsInput.value) > allQuestions.length) {
-      numQuestionsInput.value = allQuestions.length;
+    addEventListeners();
+    questionCountInfo.textContent = `Total MCQs available: 91`;
+}
+
+/**
+ * Adds all necessary event listeners.
+ */
+function addEventListeners() {
+    startBtn.addEventListener('click', handleStartTest);
+    optionsList.addEventListener('click', handleOptionSelect);
+    nextBtn.addEventListener('click', handleNextQuestion);
+    retakeFullBtn.addEventListener('click', () => handleRetake(false));
+    retakeWrongBtn.addEventListener('click', () => handleRetake(true));
+    document.addEventListener('keydown', handleKeyPress);
+}
+
+/**
+ * Validates inputs and starts the test.
+ */
+function handleStartTest() {
+    errorMessage.textContent = '';
+    
+    // Validate number of questions to attempt
+    let numToAttempt = parseInt(numQuestionsInput.value, 10);
+    if (isNaN(numToAttempt) || numToAttempt <= 0) {
+        numToAttempt = 1;
+        numQuestionsInput.value = '1';
     }
-  };
-
-  const loadQuestions = () => {
-    const savedQuestions = localStorage.getItem('mcqQuestions');
-    if (savedQuestions) {
-      try {
-        allQuestions = JSON.parse(savedQuestions);
-      } catch (e) {
-        console.error('Error parsing saved questions:', e);
-        allQuestions = defaultQuestions;
-        localStorage.setItem('mcqQuestions', JSON.stringify(allQuestions));
-      }
-    } else {
-      allQuestions = defaultQuestions;
-      localStorage.setItem('mcqQuestions', JSON.stringify(allQuestions));
-    }
-    updateSetupUI();
-  };
-
-  const startTest = () => {
-    const num = parseInt(numQuestionsInput.value);
-    numQuestionsError.textContent = '';
-
-    if (isNaN(num) || num < 1 || num > allQuestions.length) {
-      numQuestionsError.textContent = `Please enter a number between 1 and ${allQuestions.length}.`;
-      return;
+    // FIX: Use `allQuestions` for validation and messaging.
+    if (numToAttempt > allQuestions.length) {
+        numToAttempt = allQuestions.length;
+        numQuestionsInput.value = String(allQuestions.length);
+        errorMessage.textContent = `Max questions available is ${allQuestions.length}. Capped automatically.`;
     }
 
-    resetState();
+    // Setup and start the quiz
+    // FIX: Use `allQuestions` to source the quiz questions.
+    originalTestQuestions = shuffleArray([...allQuestions]).slice(0, numToAttempt);
+    startQuiz(originalTestQuestions);
+}
 
-    // Select random questions
-    const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
-    currentQuestions = shuffled.slice(0, num);
+/**
+ * Sets up and begins a quiz session.
+ */
+function startQuiz(questions) {
+    currentTestQuestions = questions;
+    currentQuestionIndex = 0;
+    score = 0;
+    wrongAnswers = [];
+    timeLeft = currentTestQuestions.length * 60;
 
-    showScreen('quiz');
+    switchView(quizContainer);
     displayQuestion();
-    startTimer(num * 60);
-  };
+    startTimer();
+}
 
-  const startTestWithQuestions = (questions) => {
-    resetState();
-    currentQuestions = questions;
-    showScreen('quiz');
-    displayQuestion();
-    startTimer(questions.length * 60);
-  };
-
-  const displayQuestion = () => {
-    if (currentQuestionIndex >= currentQuestions.length) {
-      endTest();
-      return;
+/**
+ * Displays the current question and its options.
+ */
+function displayQuestion() {
+    if (currentQuestionIndex >= currentTestQuestions.length) {
+        endTest();
+        return;
     }
 
-    questionContainer.classList.remove('fade-out');
-    void questionContainer.offsetWidth; // Trigger reflow
-    questionContainer.classList.add('fade-in');
+    const progressPercentage = ((currentQuestionIndex + 1) / currentTestQuestions.length) * 100;
+    progressBarInner.style.width = `${progressPercentage}%`;
 
-    const question = currentQuestions[currentQuestionIndex];
-    questionText.textContent = question.question;
+    const currentQuestion = currentTestQuestions[currentQuestionIndex];
+    progressText.textContent = `Question ${currentQuestionIndex + 1} of ${currentTestQuestions.length}`;
+    questionText.textContent = currentQuestion.question;
 
     optionsList.innerHTML = '';
-    question.options.forEach((option, index) => {
-      const li = document.createElement('li');
-      li.textContent = option;
-      li.dataset.index = index;
-      li.addEventListener('click', handleOptionClick);
-      optionsList.appendChild(li);
+    // Shuffle options for variety
+    const shuffledOptions = shuffleArray([...currentQuestion.options]);
+    shuffledOptions.forEach(option => {
+        const li = document.createElement('li');
+        li.textContent = option;
+        li.dataset.option = option;
+        optionsList.appendChild(li);
     });
 
-    updateProgress();
-    nextBtn.disabled = true;
-  };
+    nextBtn.classList.add('hidden');
+}
 
-  const handleOptionClick = (e) => {
-    const selectedOption = e.target;
-    const selectedIndex = parseInt(selectedOption.dataset.index);
-    const correctIndex = currentQuestions[currentQuestionIndex].correctAnswer;
+/**
+ * Handles the user selecting an option.
+ */
+function handleOptionSelect(e) {
+    const target = e.target;
+    if (target.tagName !== 'LI' || target.classList.contains('disabled')) return;
+
+    const selectedOption = target.dataset.option;
+    const correctAnswer = currentTestQuestions[currentQuestionIndex].answer;
 
     // Disable all options
-    Array.from(optionsList.children).forEach((li) => {
-      li.classList.add('selected'); // Disables pointer events via CSS
+    Array.from(optionsList.children).forEach(child => {
+        const li = child;
+        li.classList.add('disabled');
+        if (li.dataset.option === correctAnswer) {
+            li.classList.add('correct');
+        }
     });
 
-    if (selectedIndex === correctIndex) {
-      selectedOption.classList.add('correct');
-      correctAnswers++;
+    if (selectedOption === correctAnswer) {
+        score++;
     } else {
-      selectedOption.classList.add('wrong');
-      optionsList.children[correctIndex].classList.add('correct');
-      wrongAnswers++;
-      wrongQuestionIndices.push(currentQuestionIndex);
+        target.classList.add('incorrect');
+        wrongAnswers.push(currentTestQuestions[currentQuestionIndex]);
     }
+    
+    nextBtn.classList.remove('hidden');
+}
 
-    nextBtn.disabled = false;
-  };
-
-  const handleNextQuestion = () => {
+/**
+ * Moves to the next question or ends the test.
+ */
+function handleNextQuestion() {
     currentQuestionIndex++;
-    questionContainer.classList.add('fade-out');
-    setTimeout(() => {
-      displayQuestion();
-    }, 300); // Wait for fade-out animation
-  };
+    displayQuestion();
+}
 
-  const updateProgress = () => {
-    const current = currentQuestionIndex + 1;
-    const total = currentQuestions.length;
-    progressCounter.textContent = `Question ${current} of ${total}`;
-    progressBar.style.width = `${(current / total) * 100}%`;
-  };
-
-  const startTimer = (duration) => {
-    let timeLeft = duration;
-    clearInterval(timerInterval);
-
-    timerInterval = setInterval(() => {
-      timeLeft--;
-      const minutes = Math.floor(timeLeft / 60);
-      const seconds = timeLeft % 60;
-      timerDisplay.textContent = `Time: ${minutes}:${seconds
-        .toString()
-        .padStart(2, '0')}`;
-
-      if (timeLeft <= 10) {
-        timerDisplay.style.color = 'var(--wrong-color)';
-      }
-
-      if (timeLeft <= 0) {
-        endTest();
-      }
+function startTimer() {
+    clearInterval(timer);
+    updateTimerDisplay();
+    timer = window.setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+            endTest();
+        }
     }, 1000);
-  };
+}
 
-  const endTest = () => {
-    clearInterval(timerInterval);
-    showScreen('result');
+function updateTimerDisplay() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    timerText.textContent = `Time: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+function endTest() {
+    clearInterval(timer);
     displayResults();
-  };
+    switchView(resultContainer);
+}
 
-  const displayResults = () => {
-    const total = currentQuestions.length;
-    const percentage =
-      total > 0 ? ((correctAnswers / total) * 100).toFixed(1) : 0;
+function displayResults() {
+    const total = currentTestQuestions.length;
+    const percentage = total > 0 ? (score / total * 100).toFixed(1) : 0;
+    scoreSummary.innerHTML = `
+        <span>Correct: <strong>${score}</strong></span>
+        <span>Wrong: <strong>${total - score}</strong></span>
+        <span>Score: <strong>${percentage}%</strong></span>
+    `;
 
-    animateValue(correctCountSpan, 0, correctAnswers, 500);
-    animateValue(wrongCountSpan, 0, wrongAnswers, 500);
-    animatePercentage(percentageSpan, 0, percentage, 1000);
-
-    wrongQuestionsList.innerHTML = '';
-    if (wrongQuestionIndices.length > 0) {
-      document.getElementById('wrong-questions-container').style.display =
-        'block';
-      wrongQuestionIndices.forEach((index, i) => {
-        const question = currentQuestions[index];
-        const item = document.createElement('div');
-        item.className = 'wrong-question-item';
-        item.style.animationDelay = `${i * 0.1}s`;
-        item.innerHTML = `
-          <p>${question.question}</p>
-          <p class="correct-answer">Correct Answer: ${
-            question.options[question.correctAnswer]
-          }</p>
-        `;
-        wrongQuestionsList.appendChild(item);
-      });
+    if (wrongAnswers.length > 0) {
+        wrongQuestionsContainer.classList.remove('hidden');
+        retakeWrongBtn.classList.remove('hidden');
+        wrongQuestionsList.innerHTML = '';
+        wrongAnswers.forEach(q => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <div class="wrong-q-text">${q.question}</div>
+                <div class="wrong-q-answer">Correct Answer: ${q.answer}</div>
+            `;
+            wrongQuestionsList.appendChild(li);
+        });
     } else {
-      document.getElementById('wrong-questions-container').style.display =
-        'none';
+        wrongQuestionsContainer.classList.add('hidden');
+        retakeWrongBtn.classList.add('hidden');
+    }
+}
+
+/**
+ * Handles retaking the test.
+ */
+function handleRetake(isWrongOnly) {
+    const questionsForRetake = isWrongOnly ? wrongAnswers : originalTestQuestions;
+    if (questionsForRetake.length > 0) {
+        startQuiz(questionsForRetake);
+    } else {
+        // If retaking wrong but there are none, go back to setup
+        switchView(setupContainer);
+    }
+}
+
+/**
+ * Handles keyboard shortcuts for navigation.
+ */
+function handleKeyPress(e) {
+    if (!quizContainer.classList.contains('active')) return;
+
+    if (e.key >= '1' && e.key <= '4') {
+        e.preventDefault();
+        const optionIndex = parseInt(e.key, 10) - 1;
+        const optionElements = optionsList.querySelectorAll('li');
+        if (optionIndex < optionElements.length && !optionElements[optionIndex].classList.contains('disabled')) {
+            optionElements[optionIndex].click();
+        }
     }
 
-    retakeWrongBtn.style.display =
-      wrongQuestionIndices.length > 0 ? 'inline-block' : 'none';
-  };
-
-  const retakeWrongQuestions = () => {
-    const questionsToRetake = wrongQuestionIndices.map(
-      (index) => currentQuestions[index]
-    );
-    startTestWithQuestions(questionsToRetake);
-  };
-
-  const resetState = () => {
-    currentQuestions = [];
-    currentQuestionIndex = 0;
-    correctAnswers = 0;
-    wrongAnswers = 0;
-    wrongQuestionIndices = [];
-    clearInterval(timerInterval);
-    timerDisplay.style.color = 'var(--secondary-text-color)';
-  };
-
-  // --- Animation Functions ---
-
-  function animateValue(obj, start, end, duration) {
-    if (start === end) {
-      obj.textContent = end;
-      return;
+    if (e.key === 'Enter' && !nextBtn.classList.contains('hidden')) {
+        e.preventDefault();
+        nextBtn.click();
     }
-    let startTimestamp = null;
-    const step = (timestamp) => {
-      if (!startTimestamp) startTimestamp = timestamp;
-      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-      const currentValue = Math.floor(progress * (end - start) + start);
-      obj.textContent = currentValue;
-      if (progress < 1) {
-        window.requestAnimationFrame(step);
-      }
-    };
-    window.requestAnimationFrame(step);
-  }
+}
 
-  function animatePercentage(obj, start, end, duration) {
-    if (start === end) {
-      obj.textContent = `${end}%`;
-      return;
+// --- UTILITY FUNCTIONS ---
+
+function switchView(activeContainer) {
+    [setupContainer, quizContainer, resultContainer].forEach(container => {
+        container.classList.remove('active');
+    });
+    activeContainer.classList.add('active');
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
     }
-    let startTimestamp = null;
-    const step = (timestamp) => {
-      if (!startTimestamp) startTimestamp = timestamp;
-      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-      const currentValue = progress * (end - start) + start;
-      obj.textContent = `${currentValue.toFixed(1)}%`;
-      if (progress < 1) {
-        window.requestAnimationFrame(step);
-      }
-    };
-    window.requestAnimationFrame(step);
-  }
+    return array;
+}
 
-  // --- Event Listeners ---
-  startBtn.addEventListener('click', startTest);
-  nextBtn.addEventListener('click', handleNextQuestion);
-  retakeWrongBtn.addEventListener('click', retakeWrongQuestions);
-  homeBtn.addEventListener('click', () => {
-    showScreen('setup');
-  });
-
-  // --- Initialization ---
-  const init = () => {
-    loadQuestions();
-    showScreen('setup');
-  };
-
-  init();
-});
+// --- APP INITIALIZATION ---
+document.addEventListener('DOMContentLoaded', init);

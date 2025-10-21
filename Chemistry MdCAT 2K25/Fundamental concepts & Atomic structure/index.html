@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MCQ Test Platform</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app-container">
+      <!-- Setup Screen -->
+      <div id="setup-container" class="container active">
+        <h1>Chemistry MCQ Test</h1>
+        <p id="question-count-info"></p>
+        <div class="form-group">
+          <label for="num-questions">Number of Questions to Attempt:</label>
+          <input type="number" id="num-questions" min="1" value="10" />
+        </div>
+        <div id="error-message" class="error"></div>
+        <div class="button-group">
+          <button id="start-btn" class="btn btn-primary">Start Test</button>
+        </div>
+      </div>
+
+      <!-- Quiz Screen -->
+      <div id="quiz-container" class="container">
+        <div class="quiz-header">
+          <div id="progress-text">Question 1 of 10</div>
+          <div id="timer-text">Time: 10:00</div>
+        </div>
+        <div class="progress-bar">
+          <div id="progress-bar-inner"></div>
+        </div>
+        <div id="question-text" class="question"></div>
+        <ul id="options-list" class="options">
+          <!-- Options will be dynamically inserted here -->
+        </ul>
+        <div class="quiz-footer">
+          <button id="next-btn" class="btn btn-primary hidden">Next</button>
+        </div>
+      </div>
+
+      <!-- Result Screen -->
+      <div id="result-container" class="container">
+        <h1>Test Results</h1>
+        <div id="score-summary" class="score-summary"></div>
+        <div id="wrong-questions-container" class="hidden">
+          <h2>Review Incorrect Answers</h2>
+          <ul id="wrong-questions-list"></ul>
+        </div>
+        <div class="button-group">
+          <button id="retake-full-btn" class="btn btn-primary">New Test</button>
+          <button id="retake-wrong-btn" class="btn btn-secondary">
+            Retake Wrong Questions
+          </button>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
