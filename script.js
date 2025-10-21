@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const enteredPassword = passwordInput.value;
 
       if (enteredPassword === correctPassword) {
+        sessionStorage.setItem("unlocked", "true");
         loginContainer.classList.add('hidden');
         mainContainer.classList.remove('hidden');
         mainContainer.classList.add('animate-in');
