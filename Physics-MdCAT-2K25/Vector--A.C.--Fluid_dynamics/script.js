@@ -702,18 +702,85 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// Disable right-click menu
-document.addEventListener("contextmenu", (event) => event.preventDefault());
+document.addEventListener("DOMContentLoaded", () => {
+  // Check if the user is on a mobile device
+  const isMobile =
+    /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
+      navigator.userAgent
+    );
 
-// Disable common copy shortcuts (Ctrl+C, Ctrl+U, Ctrl+S, etc.)
+  if (!isMobile) return; // Exit — only run this code on mobile
+
+  const calcBtn = document.getElementById("calc-btn");
+  const calcPopup = document.getElementById("calc-popup");
+  const closeCalc = document.getElementById("close-calc");
+  const calcFrame = document.querySelector(".calc-frame");
+
+  if (!calcBtn || !calcPopup || !closeCalc || !calcFrame) return;
+
+  // Disable scrolling inside iframe visually
+  calcFrame.setAttribute("scrolling", "no");
+  calcFrame.style.overflow = "hidden";
+
+  calcBtn.addEventListener("click", () => {
+    calcPopup.classList.remove("hidden");
+
+    try {
+      const doc = calcFrame.contentDocument || calcFrame.contentWindow.document;
+      if (doc && doc.body) {
+        doc.documentElement.style.overflow = "hidden";
+        doc.body.style.overflow = "hidden";
+        doc.body.style.margin = "0";
+      }
+    } catch (err) {
+      // Cross-origin — cannot modify iframe
+      fitIframe();
+    }
+  });
+
+  closeCalc.addEventListener("click", () => {
+    calcPopup.classList.add("hidden");
+  });
+
+  // Fallback function for scaling iframe
+  function fitIframe() {
+    if (!calcFrame) return;
+    calcFrame.style.transformOrigin = "top left";
+    calcFrame.style.transform = "scale(0.98)";
+    calcFrame.style.border = "0";
+  }
+
+  // Adjust scale dynamically on mobile screen resize
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 520) {
+      calcFrame.style.transform = "none";
+    } else {
+      calcFrame.style.transform = "scale(0.98)";
+    }
+  });
+});
+
+// Disable right-click menu (desktop only)
+document.addEventListener("contextmenu", (event) => {
+  if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    event.preventDefault();
+  }
+});
+
+// Disable common keyboard shortcuts (desktop only)
 document.addEventListener("keydown", (event) => {
   if (
     event.ctrlKey &&
-    ["c", "u", "s", "x", "a"].includes(event.key.toLowerCase())
+    ["c", "u", "s", "x", "a"].includes(event.key.toLowerCase()) &&
+    !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
   ) {
     event.preventDefault();
   }
 });
 
-// Optional: prevent drag selection
-document.addEventListener("dragstart", (event) => event.preventDefault());
+// Prevent drag text/image on desktop but allow mobile touch scroll
+document.addEventListener("dragstart", (event) => {
+  if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    event.preventDefault();
+  }
+});
