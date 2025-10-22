@@ -784,3 +784,43 @@ document.addEventListener("dragstart", (event) => {
     event.preventDefault();
   }
 });
+
+// --- TOUCH SUPPORT & PREVENT SWIPE ISSUES ON TOUCH LAPTOPS ---
+(function enableTouchLaptopSupport() {
+  // Prevent accidental swipe left/right from changing browser navigation
+  window.addEventListener("touchstart", function (e) {
+    if (e.touches.length > 1) return; // Allow pinch zoom
+    this._touchStartX = e.touches[0].clientX;
+  });
+
+  window.addEventListener(
+    "touchmove",
+    function (e) {
+      const touch = e.touches[0];
+      const deltaX = Math.abs(touch.clientX - this._touchStartX);
+      // Ignore small movement; block only horizontal swipes
+      if (deltaX > 80) e.preventDefault();
+    },
+    { passive: false }
+  );
+
+  // Ensure touch tap on options works just like a click
+  document.querySelectorAll("#options-list li").forEach((li) => {
+    li.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      li.click();
+    });
+  });
+
+  // Prevent accidental scroll while answering
+  const testScreen = document.getElementById("test-screen");
+  testScreen.addEventListener(
+    "touchmove",
+    function (e) {
+      if (e.target.closest("#options-list")) {
+        e.preventDefault(); // Stop screen from scrolling when swiping options
+      }
+    },
+    { passive: false }
+  );
+})();

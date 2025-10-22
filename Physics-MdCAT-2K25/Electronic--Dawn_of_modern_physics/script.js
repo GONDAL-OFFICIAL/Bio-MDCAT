@@ -849,9 +849,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener("DOMContentLoaded", () => {
   // Check if the user is on a mobile device
-  const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
-    navigator.userAgent
-  );
+  const isMobile =
+    /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
+      navigator.userAgent
+    );
 
   if (!isMobile) return; // Exit — only run this code on mobile
 
@@ -904,18 +905,67 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// Disable right-click menu
-document.addEventListener("contextmenu", (event) => event.preventDefault());
+// Disable right-click menu (desktop only)
+document.addEventListener("contextmenu", (event) => {
+  if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    event.preventDefault();
+  }
+});
 
-// Disable common copy shortcuts (Ctrl+C, Ctrl+U, Ctrl+S, etc.)
+// Disable common keyboard shortcuts (desktop only)
 document.addEventListener("keydown", (event) => {
   if (
     event.ctrlKey &&
-    ["c", "u", "s", "x", "a"].includes(event.key.toLowerCase())
+    ["c", "u", "s", "x", "a"].includes(event.key.toLowerCase()) &&
+    !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
   ) {
     event.preventDefault();
   }
 });
 
-// Optional: prevent drag selection
-document.addEventListener("dragstart", (event) => event.preventDefault());
+// Prevent drag text/image on desktop but allow mobile touch scroll
+document.addEventListener("dragstart", (event) => {
+  if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    event.preventDefault();
+  }
+});
+
+// --- TOUCH SUPPORT & PREVENT SWIPE ISSUES ON TOUCH LAPTOPS ---
+(function enableTouchLaptopSupport() {
+  // Prevent accidental swipe left/right from changing browser navigation
+  window.addEventListener("touchstart", function (e) {
+    if (e.touches.length > 1) return; // Allow pinch zoom
+    this._touchStartX = e.touches[0].clientX;
+  });
+
+  window.addEventListener(
+    "touchmove",
+    function (e) {
+      const touch = e.touches[0];
+      const deltaX = Math.abs(touch.clientX - this._touchStartX);
+      // Ignore small movement; block only horizontal swipes
+      if (deltaX > 80) e.preventDefault();
+    },
+    { passive: false }
+  );
+
+  // Ensure touch tap on options works just like a click
+  document.querySelectorAll("#options-list li").forEach((li) => {
+    li.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      li.click();
+    });
+  });
+
+  // Prevent accidental scroll while answering
+  const testScreen = document.getElementById("test-screen");
+  testScreen.addEventListener(
+    "touchmove",
+    function (e) {
+      if (e.target.closest("#options-list")) {
+        e.preventDefault(); // Stop screen from scrolling when swiping options
+      }
+    },
+    { passive: false }
+  );
+})();

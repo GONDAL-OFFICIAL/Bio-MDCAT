@@ -32,7 +32,7 @@ body {
   padding: 1rem;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: hidden; /* Prevents scrollbars during transitions */
+  overflow: hidden; /* default for desktops */
 }
 
 .app-container {
@@ -524,5 +524,13 @@ input[type="number"]:focus {
   .calc-container {
     width: 90vw;
     height: 80vh;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  body {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    align-items: flex-start;
   }
 }
