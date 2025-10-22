@@ -32,7 +32,6 @@ body {
   padding: 1rem;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: hidden; /* default for desktops */
 }
 
 .app-container {
