@@ -779,6 +779,74 @@
   }
 })();
 
+document.addEventListener("DOMContentLoaded", () => {
+  const calcBtn = document.getElementById("calc-btn");
+  const calcPopup = document.getElementById("calc-popup");
+  const closeCalc = document.getElementById("close-calc");
+
+  calcBtn.addEventListener("click", () => {
+    calcPopup.classList.remove("hidden");
+  });
+
+  closeCalc.addEventListener("click", () => {
+    calcPopup.classList.add("hidden");
+  });
+
+  // Optional: close popup if clicking outside
+  calcPopup.addEventListener("click", (e) => {
+    if (e.target === calcPopup) {
+      calcPopup.classList.add("hidden");
+    }
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const calcBtn = document.getElementById("calc-btn");
+  const calcPopup = document.getElementById("calc-popup");
+  const closeCalc = document.getElementById("close-calc");
+  const calcContainer = document.querySelector(".calc-container");
+  const header = document.querySelector(".calc-header");
+
+  // --- Show and hide calculator ---
+  calcBtn.addEventListener("click", () => {
+    calcPopup.classList.remove("hidden");
+  });
+
+  closeCalc.addEventListener("click", () => {
+    calcPopup.classList.add("hidden");
+  });
+
+  calcPopup.addEventListener("click", (e) => {
+    if (e.target === calcPopup) {
+      calcPopup.classList.add("hidden");
+    }
+  });
+
+  // --- Dragging logic ---
+  let isDragging = false;
+  let offsetX, offsetY;
+
+  header.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    const rect = calcContainer.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+    calcContainer.style.cursor = "grabbing";
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+    calcContainer.style.left = e.clientX - offsetX + "px";
+    calcContainer.style.top = e.clientY - offsetY + "px";
+    calcContainer.style.transform = "none"; // disable center transform after first move
+  });
+
+  document.addEventListener("mouseup", () => {
+    isDragging = false;
+    calcContainer.style.cursor = "grab";
+  });
+});
+
 // Disable right-click menu
 document.addEventListener("contextmenu", (event) => event.preventDefault());
 

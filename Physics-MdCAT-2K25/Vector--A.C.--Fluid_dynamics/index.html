@@ -13,14 +13,19 @@
   </head>
   <body>
     <div class="app-container">
-      <a
-        href="https://gondal-official.github.io/Bio-MDCAT/"
-        target="_blank"
-        rel="noopener noreferrer"
-        id="home-btn"
-        class="btn-home"
-        >HOME</a
-      >
+      <header class="top-bar">
+        <a
+          href="https://gondal-official.github.io/Bio-MDCAT/"
+          target="_blank"
+          rel="noopener noreferrer"
+          id="home-btn"
+          class="nav-btn"
+        >
+          HOME
+        </a>
+
+        <button id="calc-btn" class="nav-btn">CALCULATOR</button>
+      </header>
       <!-- Setup Screen -->
       <div id="setup-screen" class="screen active">
         <div class="card">
@@ -86,6 +91,22 @@
         </div>
       </div>
     </div>
+
+    <!-- Calculator Popup -->
+    <div id="calc-popup" class="calc-popup hidden">
+      <div class="calc-container">
+        <div class="calc-header">
+          <span>Calculator</span>
+          <button id="close-calc" class="close-btn">×</button>
+        </div>
+        <iframe
+          src="https://gondal-official.github.io/Calulator/"
+          title="Calculator"
+          class="calc-frame"
+        ></iframe>
+      </div>
+    </div>
+
     <script src="script.js"></script>
   </body>
 </html>
