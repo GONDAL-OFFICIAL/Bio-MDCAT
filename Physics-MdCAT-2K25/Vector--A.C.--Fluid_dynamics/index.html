@@ -107,6 +107,27 @@
       </div>
     </div>
 
+    <script>
+      // --- TOUCH SCROLL FIX FOR CALCULATOR POPUP ---
+      document.addEventListener(
+        "touchmove",
+        function (e) {
+          const calcPopup = document.getElementById("calc-popup");
+          const calcContainer = document.querySelector(".calc-container");
+
+          if (calcPopup && !calcPopup.classList.contains("hidden")) {
+            // Allow scroll *inside* calculator
+            if (calcContainer && calcContainer.contains(e.target)) {
+              return; // let it scroll
+            }
+            // Prevent background scroll
+            e.preventDefault();
+          }
+        },
+        { passive: false }
+      );
+    </script>
+
     <script src="script.js"></script>
   </body>
 </html>
