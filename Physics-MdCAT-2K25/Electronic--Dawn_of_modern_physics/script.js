@@ -847,6 +847,63 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+  // Check if the user is on a mobile device
+  const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
+    navigator.userAgent
+  );
+
+  if (!isMobile) return; // Exit — only run this code on mobile
+
+  const calcBtn = document.getElementById("calc-btn");
+  const calcPopup = document.getElementById("calc-popup");
+  const closeCalc = document.getElementById("close-calc");
+  const calcFrame = document.querySelector(".calc-frame");
+
+  if (!calcBtn || !calcPopup || !closeCalc || !calcFrame) return;
+
+  // Disable scrolling inside iframe visually
+  calcFrame.setAttribute("scrolling", "no");
+  calcFrame.style.overflow = "hidden";
+
+  calcBtn.addEventListener("click", () => {
+    calcPopup.classList.remove("hidden");
+
+    try {
+      const doc = calcFrame.contentDocument || calcFrame.contentWindow.document;
+      if (doc && doc.body) {
+        doc.documentElement.style.overflow = "hidden";
+        doc.body.style.overflow = "hidden";
+        doc.body.style.margin = "0";
+      }
+    } catch (err) {
+      // Cross-origin — cannot modify iframe
+      fitIframe();
+    }
+  });
+
+  closeCalc.addEventListener("click", () => {
+    calcPopup.classList.add("hidden");
+  });
+
+  // Fallback function for scaling iframe
+  function fitIframe() {
+    if (!calcFrame) return;
+    calcFrame.style.transformOrigin = "top left";
+    calcFrame.style.transform = "scale(0.98)";
+    calcFrame.style.border = "0";
+  }
+
+  // Adjust scale dynamically on mobile screen resize
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 520) {
+      calcFrame.style.transform = "none";
+    } else {
+      calcFrame.style.transform = "scale(0.98)";
+    }
+  });
+});
+
 // Disable right-click menu
 document.addEventListener("contextmenu", (event) => event.preventDefault());
 
