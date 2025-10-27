@@ -38,7 +38,7 @@ const PRESET_QUESTIONS = [
       "Atomic number",
       "Atomic masses"
     ],
-    "correctAnswer": "Atomic masses"
+    "answer": "Atomic masses"
   },
   {
     "question": "The basis of Modern periodic table is:",
@@ -48,7 +48,7 @@ const PRESET_QUESTIONS = [
       "Ionization energy",
       "atomic number"
     ],
-    "correctAnswer": "atomic number"
+    "answer": "atomic number"
   },
   {
     "question": "The concept of atomic number was introduced by:",
@@ -58,7 +58,7 @@ const PRESET_QUESTIONS = [
       "Moseley",
       "Dobereiner"
     ],
-    "correctAnswer": "Moseley"
+    "answer": "Moseley"
   },
   {
     "question": "How many elements are present in 5th period of the periodic table:",
@@ -68,7 +68,7 @@ const PRESET_QUESTIONS = [
       "18",
       "28"
     ],
-    "correctAnswer": "18"
+    "answer": "18"
   },
   {
     "question": "The number of A-subgroups present in modern periodic table are:",
@@ -78,7 +78,7 @@ const PRESET_QUESTIONS = [
       "6",
       "5"
     ],
-    "correctAnswer": "8"
+    "answer": "8"
   },
   {
     "question": "Transition elements in 4th period are:",
@@ -88,7 +88,7 @@ const PRESET_QUESTIONS = [
       "8",
       "6"
     ],
-    "correctAnswer": "10"
+    "answer": "10"
   },
   {
     "question": "The basis of Modern periodic law is:",
@@ -98,7 +98,7 @@ const PRESET_QUESTIONS = [
       "Ionization energy",
       "atomic number"
     ],
-    "correctAnswer": "atomic number"
+    "answer": "atomic number"
   },
   {
     "question": "Which is the longest period of periodic table?",
@@ -108,7 +108,7 @@ const PRESET_QUESTIONS = [
       "6",
       "7"
     ],
-    "correctAnswer": "6"
+    "answer": "6"
   },
   {
     "question": "6th period contains the number of elements:",
@@ -118,7 +118,7 @@ const PRESET_QUESTIONS = [
       "8",
       "10"
     ],
-    "correctAnswer": "32"
+    "answer": "32"
   },
   {
     "question": "The decrease in atomic sizes is not much prominent across rows containing elements of:",
@@ -128,7 +128,7 @@ const PRESET_QUESTIONS = [
       "d-Block",
       "f- Block"
     ],
-    "correctAnswer": "d-Block"
+    "answer": "d-Block"
   },
   {
     "question": "Keeping in view the size of atoms, which order is the correct one:",
@@ -138,7 +138,7 @@ const PRESET_QUESTIONS = [
       "Li> Na",
       "Cl> I"
     ],
-    "correctAnswer": "Ba> Mg"
+    "answer": "Ba> Mg"
   },
   {
     "question": "Smaller the size of an ion:",
@@ -148,7 +148,7 @@ const PRESET_QUESTIONS = [
       "Greater in the electron affinity",
       "Greater in the energy of hydration"
     ],
-    "correctAnswer": "Greater in the energy of hydration"
+    "answer": "Greater in the energy of hydration"
   },
   {
     "question": "Which of the following statement is correct?",
@@ -158,7 +158,7 @@ const PRESET_QUESTIONS = [
       "F atom is smaller than F-",
       "F atom is larger than F-"
     ],
-    "correctAnswer": "F atom is smaller than F-"
+    "answer": "F atom is smaller than F-"
   },
   {
     "question": "Mark the correct statement:",
@@ -168,7 +168,7 @@ const PRESET_QUESTIONS = [
       "Cl- is smaller than Cl atom",
       "Cl (ion) and CI (atom) are equal in size"
     ],
-    "correctAnswer": "Na+ is smaller than Na atom"
+    "answer": "Na+ is smaller than Na atom"
   },
   {
     "question": "Keeping in view the size of atoms, which order is the correct one:",
@@ -178,7 +178,7 @@ const PRESET_QUESTIONS = [
       "Lu >Ce",
       "Cl> I"
     ],
-    "correctAnswer": "Ba > Mg"
+    "answer": "Ba > Mg"
   },
   {
     "question": "Keeping in view the size of atoms which order is correct.",
@@ -188,7 +188,7 @@ const PRESET_QUESTIONS = [
       "Ca> Be",
       "Mg >Sr"
     ],
-    "correctAnswer": "Mg >Sr"
+    "answer": "Mg >Sr"
   },
   {
     "question": "Which of the following elements has lowest ionization energy:",
@@ -198,7 +198,7 @@ const PRESET_QUESTIONS = [
       "Carbon",
       "Oxygen"
     ],
-    "correctAnswer": "Boron"
+    "answer": "Boron"
   },
   {
     "question": "Among the elements of VA group which has highest ionization energy:",
@@ -208,7 +208,7 @@ const PRESET_QUESTIONS = [
       "Antimony",
       "Bismith"
     ],
-    "correctAnswer": "Nitrogen"
+    "answer": "Nitrogen"
   },
   {
     "question": "The ionization energy of calcium is:",
@@ -218,7 +218,7 @@ const PRESET_QUESTIONS = [
       "Higher than that of Beryllium",
       "Lower than that of Strontium"
     ],
-    "correctAnswer": "Lower than that of Magnesium"
+    "answer": "Lower than that of Magnesium"
   },
   {
     "question": "Choose the correct statement.",
@@ -228,7 +228,7 @@ const PRESET_QUESTIONS = [
       "does not change",
       "First increase then decrease"
     ],
-    "correctAnswer": "Metallic character increase down the group"
+    "answer": "Metallic character increase down the group"
   },
   {
     "question": "Which of the following element has lowest melting point:",
@@ -238,7 +238,7 @@ const PRESET_QUESTIONS = [
       "Calcium",
       "Barium"
     ],
-    "correctAnswer": "Magnesium"
+    "answer": "Magnesium"
   },
   {
     "question": "Which of the following has the highest boiling point:",
@@ -248,7 +248,7 @@ const PRESET_QUESTIONS = [
       "Ba",
       "Rn"
     ],
-    "correctAnswer": "Be"
+    "answer": "Be"
   },
   {
     "question": "Mark the correct statement:",
@@ -258,7 +258,7 @@ const PRESET_QUESTIONS = [
       "All the alkali Metals are present in the same group",
       "All the noble gases are present in the same period"
     ],
-    "correctAnswer": "All the alkali Metals are present in the same group"
+    "answer": "All the alkali Metals are present in the same group"
   },
   {
     "question": "Which statement is incorrect:",
@@ -268,7 +268,7 @@ const PRESET_QUESTIONS = [
       "All the metals form positive ions",
       "All the metals form acidic oxide"
     ],
-    "correctAnswer": "All the metals form acidic oxide"
+    "answer": "All the metals form acidic oxide"
   },
   {
     "question": "Which ion will have maximum value of heat of hydration?",
@@ -278,7 +278,7 @@ const PRESET_QUESTIONS = [
       "Ba+2",
       "Mg+2"
     ],
-    "correctAnswer": "Mg+2"
+    "answer": "Mg+2"
   },
   {
     "question": "Which of the following ion has maximum hydration energy:",
@@ -288,7 +288,7 @@ const PRESET_QUESTIONS = [
       "K+",
       "Cs+"
     ],
-    "correctAnswer": "Li+"
+    "answer": "Li+"
   },
   {
     "question": "The intermediate Hydride is:",
@@ -298,7 +298,7 @@ const PRESET_QUESTIONS = [
       "BH3",
       "HF"
     ],
-    "correctAnswer": "HF"
+    "answer": "HF"
   },
   {
     "question": "Which one is ionic hydride?",
@@ -308,7 +308,7 @@ const PRESET_QUESTIONS = [
       "NH3",
       "CH4"
     ],
-    "correctAnswer": "NaH"
+    "answer": "NaH"
   },
   {
     "question": "The hydrides of group I-A are:",
@@ -318,7 +318,7 @@ const PRESET_QUESTIONS = [
       "metallic",
       "interstil"
     ],
-    "correctAnswer": "ionic"
+    "answer": "ionic"
   },
   {
     "question": "Which of the following metal gives an amphoteric oxide?",
@@ -328,7 +328,7 @@ const PRESET_QUESTIONS = [
       "Cu",
       "Zn"
     ],
-    "correctAnswer": "Zn"
+    "answer": "Zn"
   },
   {
     "question": "Coinage metals are present in the periodic table in group.",
@@ -338,7 +338,7 @@ const PRESET_QUESTIONS = [
       "II-A",
       "II-B"
     ],
-    "correctAnswer": "I-B"
+    "answer": "I-B"
   },
   {
     "question": "The oxides of non-metals are:",
@@ -348,7 +348,7 @@ const PRESET_QUESTIONS = [
       "amphoteric",
       "neutral"
     ],
-    "correctAnswer": "acidic"
+    "answer": "acidic"
   },
   {
     "question": "Which one is amphoteric oxide?",
@@ -358,7 +358,7 @@ const PRESET_QUESTIONS = [
       "ZnO",
       "Li2O"
     ],
-    "correctAnswer": "ZnO"
+    "answer": "ZnO"
   },
   {
     "question": "Zinc Oxide is an example of:",
@@ -368,7 +368,7 @@ const PRESET_QUESTIONS = [
       "Acidic",
       "Basic"
     ],
-    "correctAnswer": "Amphoteric"
+    "answer": "Amphoteric"
   },
   {
     "question": "Which one of the following elements forms weakly acidic oxide:",
@@ -378,7 +378,7 @@ const PRESET_QUESTIONS = [
       "Sulphur",
       "Chlorine"
     ],
-    "correctAnswer": "Phosphorous"
+    "answer": "Phosphorous"
   },
   {
     "question": "The element which forms Amphoteric oxide is:",
@@ -388,7 +388,7 @@ const PRESET_QUESTIONS = [
       "Magnesium(Mg)",
       "Calcium"
     ],
-    "correctAnswer": "Beryllium (Be)"
+    "answer": "Beryllium (Be)"
   },
   {
     "question": "Which of the following form amphoteric oxide:",
@@ -398,7 +398,7 @@ const PRESET_QUESTIONS = [
       "C",
       "Zn"
     ],
-    "correctAnswer": "Zn"
+    "answer": "Zn"
   },
   {
     "question": "Which oxide is amphoteric in nature?",
@@ -408,7 +408,7 @@ const PRESET_QUESTIONS = [
       "MgO",
       "SO3"
     ],
-    "correctAnswer": "Al2O3"
+    "answer": "Al2O3"
   },
   {
     "question": "The oxides of Beryllium are:",
@@ -418,7 +418,7 @@ const PRESET_QUESTIONS = [
       "amphoteric",
       "none of t..."
     ],
-    "correctAnswer": "amphoteric"
+    "answer": "amphoteric"
   },
   {
     "question": "Aluminium oxide is:",
@@ -428,7 +428,7 @@ const PRESET_QUESTIONS = [
       "Amphoteric oxide",
       "None of these"
     ],
-    "correctAnswer": "Amphoteric oxide"
+    "answer": "Amphoteric oxide"
   },
   {
     "question": "Keeping in view atomic and ionic radii, mark the correct statement",
@@ -438,7 +438,7 @@ const PRESET_QUESTIONS = [
       "Cl- = Cl",
       "Na+ > Na"
     ],
-    "correctAnswer": "Cl- < Cl"
+    "answer": "Cl- < Cl"
   },
   {
     "question": "Pick the element having least ionization energy value:",
@@ -448,7 +448,7 @@ const PRESET_QUESTIONS = [
       "Fluorine",
       "Neon"
     ],
-    "correctAnswer": "Neon"
+    "answer": "Neon"
   },
   {
     "question": "Which compound is the most reactive one?",
@@ -458,7 +458,7 @@ const PRESET_QUESTIONS = [
       "Ethene",
       "Ethyne"
     ],
-    "correctAnswer": "Ethyne"
+    "answer": "Ethyne"
   },
   {
     "question": "Elements of periodic table are classified into blocks:",
@@ -468,7 +468,7 @@ const PRESET_QUESTIONS = [
       "Five",
       "Six"
     ],
-    "correctAnswer": "Four"
+    "answer": "Four"
   },
   {
     "question": "Ionization energy of an atom does not depend on:",
@@ -478,7 +478,7 @@ const PRESET_QUESTIONS = [
       "Physical state",
       "Shielding effect"
     ],
-    "correctAnswer": "Physical state"
+    "answer": "Physical state"
   },
   {
     "question": "Which statement is correct:",
@@ -488,7 +488,7 @@ const PRESET_QUESTIONS = [
       "F atom is smaller than F-",
       "F atom is larger than F-"
     ],
-    "correctAnswer": "F atom is smaller than F-"
+    "answer": "F atom is smaller than F-"
   },
   {
     "question": "Select the two normal elements are present in 5th period:",
@@ -498,7 +498,7 @@ const PRESET_QUESTIONS = [
       "Fr, Ra",
       "La, Hf"
     ],
-    "correctAnswer": "Rb, Sr"
+    "answer": "Rb, Sr"
   },
   {
     "question": "Select the two normal elements are present in 4th period:",
@@ -508,7 +508,7 @@ const PRESET_QUESTIONS = [
       "Cs, Ba",
       "Fr, Ra"
     ],
-    "correctAnswer": "K, Ca"
+    "answer": "K, Ca"
   },
   {
     "question": "Classification of elements in the modern periodic table is based on:",
@@ -518,7 +518,7 @@ const PRESET_QUESTIONS = [
       "Moseley law",
       "Mendeleev's periodic law"
     ],
-    "correctAnswer": "Moseley law"
+    "answer": "Moseley law"
   },
   {
     "question": "Which of the following metal does not form ionic hydride?",
@@ -528,7 +528,7 @@ const PRESET_QUESTIONS = [
       "Ca",
       "Sr"
     ],
-    "correctAnswer": "Mg"
+    "answer": "Mg"
   },
   {
     "question": "Select the two elements which are present in 3rd period?",
@@ -538,7 +538,7 @@ const PRESET_QUESTIONS = [
       "K, Ca",
       "Ra, Sr"
     ],
-    "correctAnswer": "Na, Mg"
+    "answer": "Na, Mg"
   },
   {
     "question": "Select the two normal elements present in sixth period:",
@@ -548,7 +548,7 @@ const PRESET_QUESTIONS = [
       "Cs, Ba",
       "La, Hf"
     ],
-    "correctAnswer": "Cs, Ba"
+    "answer": "Cs, Ba"
   },
   {
     "question": "Select the two normal elements are present in seventh period:",
@@ -558,7 +558,7 @@ const PRESET_QUESTIONS = [
       "Fr, Ra",
       "La, Hf"
     ],
-    "correctAnswer": "Fr, Ra"
+    "answer": "Fr, Ra"
   },
   {
     "question": "Which of the element gives acidic oxide?",
@@ -568,7 +568,7 @@ const PRESET_QUESTIONS = [
       "Sb",
       "Bi"
     ],
-    "correctAnswer": "P"
+    "answer": "P"
   },
   {
     "question": "which of the following elements form acidic oxide only?",
@@ -578,7 +578,7 @@ const PRESET_QUESTIONS = [
       "Sn",
       "Br"
     ],
-    "correctAnswer": "Br"
+    "answer": "Br"
   },
   {
     "question": "Amphoteric oxide is formed by:",
@@ -588,7 +588,7 @@ const PRESET_QUESTIONS = [
       "Fe",
       "Cu"
     ],
-    "correctAnswer": "Al"
+    "answer": "Al"
   },
   {
     "question": "Hydrogen resembles in properties with groups:",
@@ -598,7 +598,7 @@ const PRESET_QUESTIONS = [
       "I-A, III-A, V-A elements",
       "I-A, II-A elements"
     ],
-    "correctAnswer": "I-A, IV-A, VII-A elements"
+    "answer": "I-A, IV-A, VII-A elements"
   },
   {
     "question": "The most metallic element from the following is:",
@@ -608,7 +608,7 @@ const PRESET_QUESTIONS = [
       "Antimony",
       "Bismuth"
     ],
-    "correctAnswer": "Bismuth"
+    "answer": "Bismuth"
   },
   {
     "question": "Alkali metals are:",
@@ -618,7 +618,7 @@ const PRESET_QUESTIONS = [
       "Strong oxidizing agent",
       "Strong reducing agents"
     ],
-    "correctAnswer": "Strong reducing agents"
+    "answer": "Strong reducing agents"
   },
   {
     "question": "Non-metals are present in which block of periodic table?",
@@ -628,7 +628,7 @@ const PRESET_QUESTIONS = [
       "d-block",
       "f-block"
     ],
-    "correctAnswer": "p-block"
+    "answer": "p-block"
   },
   {
     "question": "Which is more acidic oxide in the following?",
@@ -638,7 +638,7 @@ const PRESET_QUESTIONS = [
       "MnO2",
       "Mn2O7"
     ],
-    "correctAnswer": "Mn2O7"
+    "answer": "Mn2O7"
   },
   {
     "question": "Which one is not a periodic property:",
@@ -648,7 +648,7 @@ const PRESET_QUESTIONS = [
       "Atomic Radii",
       "Hydration Energy"
     ],
-    "correctAnswer": "Density"
+    "answer": "Density"
   },
   {
     "question": "Which one of the following oxides is more basic:",
@@ -658,7 +658,7 @@ const PRESET_QUESTIONS = [
       "CaO",
       "MgO"
     ],
-    "correctAnswer": "SrO"
+    "answer": "SrO"
   },
   {
     "question": "Mark the correct statement:",
@@ -668,7 +668,7 @@ const PRESET_QUESTIONS = [
       "Metallic character remains the same from left to right along a period",
       "Metallic character remains the same down the group."
     ],
-    "correctAnswer": "Metallic character increases down the group"
+    "answer": "Metallic character increases down the group"
   },
   {
     "question": "An aqueous solution of an organic compound reacts with Na2CO3 to produce CO2. Which one of the following could be organic compound",
@@ -678,7 +678,7 @@ const PRESET_QUESTIONS = [
       "CH3COCH3",
       "CH3CHO"
     ],
-    "correctAnswer": "CH3CH2COOH"
+    "answer": "CH3CH2COOH"
   },
   {
     "question": "Which among the following has highest value of heat of hydration:",
@@ -688,7 +688,7 @@ const PRESET_QUESTIONS = [
       "Mg2+",
       "Al3+"
     ],
-    "correctAnswer": "Al3+"
+    "answer": "Al3+"
   },
   {
     "question": "The most non-metallic element of the periodic table is:",
@@ -698,7 +698,7 @@ const PRESET_QUESTIONS = [
       "Oxygen",
       "Carbon"
     ],
-    "correctAnswer": "Fluorine"
+    "answer": "Fluorine"
   },
   {
     "question": "Mark the correct statement:",
@@ -708,7 +708,7 @@ const PRESET_QUESTIONS = [
       "The ionization energy of calcium is higher than that of Beryllium.",
       "The ionization energy of calcium is lower than that of strontium."
     ],
-    "correctAnswer": "The ionization energy of calcium is lower than that of Magnesium."
+    "answer": "The ionization energy of calcium is lower than that of Magnesium."
   },
   {
     "question": "Among alkali metal ions, minimum hydration energy is shown by:",
@@ -718,7 +718,7 @@ const PRESET_QUESTIONS = [
       "Rb+",
       "K+"
     ],
-    "correctAnswer": "Rb+"
+    "answer": "Rb+"
   },
   {
     "question": "Which among following oxides is amphoteric:",
@@ -728,7 +728,7 @@ const PRESET_QUESTIONS = [
       "SO3",
       "ZnO"
     ],
-    "correctAnswer": "ZnO"
+    "answer": "ZnO"
   },
   {
     "question": "The number of Elements classified by Newlands in the Periodic Table are :",
@@ -738,7 +738,7 @@ const PRESET_QUESTIONS = [
       "92",
       "85"
     ],
-    "correctAnswer": "62"
+    "answer": "62"
   },
   {
     "question": "The oxides of metals are:",
@@ -748,7 +748,7 @@ const PRESET_QUESTIONS = [
       "Amphoteric",
       "Neutral"
     ],
-    "correctAnswer": "Basic"
+    "answer": "Basic"
   }
 ];
 
